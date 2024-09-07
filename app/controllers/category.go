@@ -20,7 +20,7 @@ func (c categoryController) GetAll(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
 	}
 
-	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS", data))
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", data))
 }
 
 // Insert implements contracts.CategoryController.

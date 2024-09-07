@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"imzakir.dev/e-commerce/app/controllers"
+	appMiddleware "imzakir.dev/e-commerce/app/middleware"
 )
 
 func InitRouters() http.Handler {
@@ -14,9 +15,16 @@ func InitRouters() http.Handler {
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
 
+	// Auth Handler
+
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"messages": "Hello World!", "request-id": c.Request().Header.Get(echo.HeaderXRequestID)})
 	})
+
+	e.GET("/restricted", func(ctx echo.Context) error {
+		return ctx.JSON(http.StatusOK, map[string]string{"messages": "Privated Area!", "request-id": ctx.Request().Header.Get(echo.HeaderXRequestID)})
+
+	}, appMiddleware.AuthMiddleware)
 
 	// controller
 	categoryController := controllers.NewCategoryController()
