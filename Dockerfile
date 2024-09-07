@@ -23,4 +23,4 @@ COPY . .
 RUN go build -o main .
 
 # Command to run the executable
-ENTRYPOINT  [ "main" , "-c", "config.toml"]
+ENTRYPOINT  [ "./main" , "-c", "config.toml"]
