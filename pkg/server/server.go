@@ -9,6 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/common-nighthawk/go-figure"
 )
 
 type IServer interface {
@@ -64,16 +66,11 @@ func (s ServerContext) Run() {
 		IdleTimeout:  s.IdleTimeout * time.Second,
 	}
 
-	fmt.Println(`
-	.___        _____                  ________        
-	|   | _____/ ____\___________     /  _____/  ____  
-	|   |/    \   __\\_  __ \__  \   /   \  ___ /  _ \ 
-	|   |   |  \  |   |  | \// __ \_ \    \_\  (  <_> )
-	|___|___|  /__|   |__|  (____  /  \______  /\____/ 
-			 \/                  \/          \/        
+	myFigure := figure.NewFigure(s.AppName, "", true)
+	myFigure.Print()
 
+	fmt.Println(`
 		- Simple Boilerplate made easy -
-	
 	`)
 
 	// AppName
