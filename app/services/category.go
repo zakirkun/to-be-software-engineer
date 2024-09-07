@@ -9,6 +9,19 @@ import (
 
 type categoryServices struct{}
 
+func (c categoryServices) Show(categoryId int) (*types.ResponseCreateCategory, error) {
+	repo := repository.NewCategoryRepository()
+	data, err := repo.Show(categoryId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponseCreateCategory{
+		Category: data,
+	}, nil
+}
+
 // GetAll implements contracts.CategoryServices.
 func (c categoryServices) GetAll() (*types.ResponseListCategory, error) {
 	repo := repository.NewCategoryRepository()
