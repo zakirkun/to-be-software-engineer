@@ -13,6 +13,22 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-
+    networks:
+      - infrastructure
+  backend_app:
+    container_name: backend_app
+    build:
+      context: .
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    networks:
+      - infrastructure
+    depends_on:
+      - mysql
 volumes:
   mysql_data:
+
+networks:
+  infrastructure:
+    driver: bridge

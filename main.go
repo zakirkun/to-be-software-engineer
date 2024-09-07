@@ -10,6 +10,7 @@ import (
 	"imzakir.dev/e-commerce/pkg/config"
 	"imzakir.dev/e-commerce/pkg/database"
 	"imzakir.dev/e-commerce/pkg/server"
+	"imzakir.dev/e-commerce/router"
 )
 
 var configFile *string
@@ -54,7 +55,7 @@ func SetWebServer() server.ServerContext {
 	return server.ServerContext{
 		AppName:      config.GetString("server.app_name"),
 		Host:         ":" + config.GetString("server.port"),
-		Handler:      nil,
+		Handler:      router.InitRouters(),
 		ReadTimeout:  time.Duration(config.GetInt("server.http_timeout")),
 		WriteTimeout: time.Duration(config.GetInt("server.http_timeout")),
 	}
