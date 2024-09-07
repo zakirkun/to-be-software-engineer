@@ -9,7 +9,8 @@ services:
       - "9000:9000"
     restart: unless-stopped
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - infrastructure
   db:
@@ -34,21 +35,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-
-  backend_app:
-    container_name: backend_app
-    build:
-      context: .
-    ports:
-      - "9000:9000"
-    restart: unless-stopped
-    networks:
-      - infrastructure
-#    depends_on:
-#      - mysql
-    depends_on:
-      mysql:
-        condition: service_healthy
 volumes:
   mysql_data:
 

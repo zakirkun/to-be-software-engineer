@@ -26,8 +26,9 @@ func InitRouters() http.Handler {
 	{
 		category := v1.Group("/category")
 		{
-			category.POST("/save", categoryController.Insert)
-			category.GET("/", categoryController.GetAll)
+			category.POST("", categoryController.Insert)
+			category.GET("", categoryController.GetAll)
+			category.GET("/:id", categoryController.Get)
 		}
 	}
 
