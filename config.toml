@@ -8,7 +8,7 @@ cache_purged = 60
 
 [database]
 db_driver = "mysql"
-db_host = "localhost"
+db_host = "db"
 db_port = "3306"
 db_name = "toko_online"
 db_username = "user"
@@ -22,3 +22,6 @@ conn_lifetime = 60
 [jwt]
 day_expired = 60
 signature_key = "SuperShy!"
+
+[message_broker]
+rabbimq_url=""

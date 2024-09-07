@@ -66,7 +66,7 @@ func (s ServerContext) Run() {
 		IdleTimeout:  s.IdleTimeout * time.Second,
 	}
 
-	myFigure := figure.NewFigure(s.AppName, "", true)
+	myFigure := figure.NewColorFigure(s.AppName, "", "green", true)
 	myFigure.Print()
 
 	fmt.Println(`
