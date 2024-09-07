@@ -14,5 +14,9 @@ func InitRouters() http.Handler {
 		return c.JSON(http.StatusOK, map[string]string{"messages": "Hello World!", "request-id": c.Request().Header.Get(echo.HeaderXRequestID)})
 	})
 
+	e.GET("/tes", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, map[string]string{"messages": "Hello World!", "request-id": c.Request().Header.Get(echo.HeaderXRequestID)})
+	})
+
 	return e
 }

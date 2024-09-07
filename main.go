@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"imzakir.dev/e-commerce/router"
 	"log"
 	"os"
 	"time"
@@ -54,7 +55,7 @@ func SetWebServer() server.ServerContext {
 	return server.ServerContext{
 		AppName:      config.GetString("server.app_name"),
 		Host:         ":" + config.GetString("server.port"),
-		Handler:      nil,
+		Handler:      router.InitRouters(),
 		ReadTimeout:  time.Duration(config.GetInt("server.http_timeout")),
 		WriteTimeout: time.Duration(config.GetInt("server.http_timeout")),
 	}

@@ -39,6 +39,7 @@ func (c *DBModel) OpenDB() (*gorm.DB, *error) {
 		log.Fatal("No Database Selected!, Please check config.toml")
 		os.Exit(1)
 	}
+	log.Println(connection)
 
 	db, err := gorm.Open(connection, &gorm.Config{})
 	if err != nil {
