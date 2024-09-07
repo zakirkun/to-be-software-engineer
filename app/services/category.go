@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"imzakir.dev/e-commerce/app/domains/contracts"
 	"imzakir.dev/e-commerce/app/domains/models"
 	"imzakir.dev/e-commerce/app/domains/types"
@@ -8,6 +10,23 @@ import (
 )
 
 type categoryServices struct{}
+
+// GetDetail implements contracts.CategoryServices.
+func (c categoryServices) GetDetail(id int) (*types.ResponseGetDetailCategory, error) {
+	repo := repository.NewCategoryRepository()
+	data, err := repo.GetDetail(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if data.Id == 0 {
+		return nil, errors.New("Record Not Found")
+	}
+
+	return &types.ResponseGetDetailCategory{
+		Category: data,
+	}, nil
+}
 
 // GetAll implements contracts.CategoryServices.
 func (c categoryServices) GetAll() (*types.ResponseListCategory, error) {

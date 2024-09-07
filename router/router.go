@@ -36,6 +36,7 @@ func InitRouters() http.Handler {
 		{
 			category.POST("/save", categoryController.Insert)
 			category.GET("/", categoryController.GetAll)
+			category.GET("/:id", categoryController.GetDetail)
 		}
 	}
 

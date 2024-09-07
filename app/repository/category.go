@@ -8,6 +8,21 @@ import (
 
 type categoryRepository struct{}
 
+// GetDetail implements contracts.CategoryRepository.
+func (c categoryRepository) GetDetail(id int) (*models.Category, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	var data models.Category
+	if err := db.Debug().Model(&models.Category{}).Where("id = ?", id).Find(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
 // GetAll implements contracts.CategoryRepository.
 func (c categoryRepository) GetAll() (*[]models.Category, error) {
 	db, err := database.DB.OpenDB()
@@ -40,3 +55,5 @@ func (c categoryRepository) Insert(data models.Category) (*models.Category, erro
 
 	return &data, nil
 }
+
+// GetDetail implements contracts.CategoryRepository

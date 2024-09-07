@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	"imzakir.dev/e-commerce/app/domains/contracts"
@@ -11,6 +12,19 @@ import (
 )
 
 type categoryController struct{}
+
+// GetDetail implements contracts.CategoryController.
+func (c categoryController) GetDetail(ctx echo.Context) error {
+	svc := services.NewCategoryServices()
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	data, err := svc.GetDetail(id)
+
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", data))
+}
 
 // GetAll implements contracts.CategoryController.
 func (c categoryController) GetAll(ctx echo.Context) error {
