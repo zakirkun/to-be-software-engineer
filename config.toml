@@ -8,11 +8,11 @@ cache_purged = 60
 
 [database]
 db_driver = "mysql"
-db_host = "localhost"
+db_host = "mysql"
 db_port = "3306"
 db_name = "toko_online"
-db_username = "root"
-db_password = ""
+db_username = "user"
+db_password ="password"
 
 [pool]
 conn_idle = 10

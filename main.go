@@ -11,7 +11,6 @@ import (
 	"imzakir.dev/e-commerce/pkg/config"
 	"imzakir.dev/e-commerce/pkg/database"
 	"imzakir.dev/e-commerce/pkg/server"
-	"imzakir.dev/e-commerce/router"
 )
 
 var configFile *string
