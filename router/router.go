@@ -1,11 +1,11 @@
 package router
 
 import (
+	routeV1 "imzakir.dev/e-commerce/router/v1"
 	"net/http"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"imzakir.dev/e-commerce/app/controllers"
 )
 
 func InitRouters() http.Handler {
@@ -18,20 +18,11 @@ func InitRouters() http.Handler {
 		return c.JSON(http.StatusOK, map[string]string{"messages": "Hello World!", "request-id": c.Request().Header.Get(echo.HeaderXRequestID)})
 	})
 
-	// controller
-	categoryController := controllers.NewCategoryController()
-
 	// Versioning
 	v1 := e.Group("/v1")
 	{
-		category := v1.Group("/category")
-		{
-			category.POST("", categoryController.Insert)
-			category.GET("", categoryController.GetAll)
-			category.GET("/:id", categoryController.Get)
-			category.PUT("/:id", categoryController.Update)
-			category.DELETE("/:id", categoryController.Delete)
-		}
+		routeV1.CategoryRoute(v1)
+		routeV1.ProductRoute(v1)
 	}
 
 	return e
