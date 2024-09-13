@@ -6,14 +6,41 @@ import (
 	"imzakir.dev/e-commerce/app/domains/models"
 	"imzakir.dev/e-commerce/app/domains/types"
 	"imzakir.dev/e-commerce/app/repository"
+	"imzakir.dev/e-commerce/pkg/config"
+	"imzakir.dev/e-commerce/pkg/jwt"
+	"strconv"
 )
 
 type customerServices struct{}
 
+func (c customerServices) Login(customer types.RequestLogin) (*types.ResponseLogin, error) {
+	dataCustomer, err := repo.GetByUsername(customer.Username)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(dataCustomer.Password), []byte(customer.Password)); err != nil {
+		return nil, err
+	}
+	signature := config.GetString("jwt.signature_key")
+	expired, _ := strconv.Atoi(config.GetString("jwt.day_expired"))
+
+	jwtClaims := jwt.NewJWTImpl(signature, expired)
+	token, err := jwtClaims.GenerateToken(map[string]interface{}{
+		"id": dataCustomer.Username,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponseLogin{
+		JwtToken: token,
+	}, nil
+}
+
 var repo = repository.NewCustomerRepository()
 
 func (c customerServices) AddCustomer(request types.RequestCreateCustomer) (*types.ResponseCreateCustomer, error) {
-
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err

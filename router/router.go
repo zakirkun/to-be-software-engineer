@@ -42,6 +42,7 @@ func InitRouters() http.Handler {
 		customer := v1.Group("/auth")
 		{
 			customer.POST("/register", customerController.Register)
+			customer.POST("/login", customerController.Login)
 		}
 	}
 
