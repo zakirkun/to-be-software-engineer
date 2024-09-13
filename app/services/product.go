@@ -10,6 +10,29 @@ import (
 type productService struct {
 }
 
+func (p productService) Update(productId int, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error) {
+	repo := repository.NewProductRepository()
+	dataProduct, err := repo.FindById(productId)
+	if err != nil {
+		return nil, err
+	}
+
+	dataProduct.CategoryId = request.CategoryId
+	dataProduct.ProductName = request.ProductName
+	dataProduct.ProductImage = request.ProductImage
+	dataProduct.ProductDescription = request.ProductDescription
+	dataProduct.Price = request.Price
+
+	data, err := repo.Update(*dataProduct)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponseCreateProduct{
+		Product: data,
+	}, nil
+}
+
 func (p productService) GetDetail(productId int) (*models.Product, error) {
 	repo := repository.NewProductRepository()
 	data, err := repo.FindById(productId)

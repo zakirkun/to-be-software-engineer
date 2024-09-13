@@ -17,7 +17,7 @@ func (c categoryServices) Delete(categoryId int) (bool, error) {
 	}
 
 	data, err := repo.Delete(*dataCategory)
-	
+
 	if err != nil {
 		return false, err
 	}
@@ -37,6 +37,9 @@ func (c categoryServices) Update(categoryId int, request types.RequestCreateCate
 		Id:           dataCategory.Id,
 		CategoryName: dataCategory.CategoryName,
 	})
+
+	//data, err := repo.Update(*dataCategory)
+
 	if err != nil {
 		return nil, err
 	}

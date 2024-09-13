@@ -12,6 +12,29 @@ import (
 
 type productController struct{}
 
+func (p productController) Edit(ctx echo.Context) error {
+	paramId := ctx.Param("id")
+	id, err := strconv.Atoi(paramId)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
+	}
+
+	var request types.RequestCreateProduct
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
+	}
+
+	svc := services.NewProductService()
+
+	data, err := svc.Update(id, request)
+
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS UPDATE PRODUCT", data))
+}
+
 func (p productController) GetDetail(ctx echo.Context) error {
 	paramId := ctx.Param("id")
 	id, err := strconv.Atoi(paramId)
