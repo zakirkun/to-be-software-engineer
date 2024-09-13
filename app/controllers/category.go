@@ -13,8 +13,30 @@ import (
 
 type categoryController struct{}
 
+func (c categoryController) Edit(ctx echo.Context) error {
+	paramId := ctx.Param("id")
+	id, err := strconv.Atoi(paramId)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "BAD REQUEST", err))
+	}
+
+	var request types.RequestCreateCategory
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
+	}
+
+	svc := services.NewCategoryServices()
+
+	data, err := svc.Update(id, request)
+
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", data))
+}
+
 func (c categoryController) Show(ctx echo.Context) error {
-	//var err error
 	paramId := ctx.Param("id")
 	id, err := strconv.Atoi(paramId)
 	if err != nil {

@@ -5,7 +5,7 @@ import (
 )
 
 type Category struct {
-	Id           int        `gorm:"column:id;primaryKey" json:"id"`
+	Id           int        `gorm:"column:id;primaryKey" json:"-"`
 	CategoryName string     `gorm:"column:category_name" json:"category_name"`
 	CreatedAt    time.Time  `json:"created_at"`
 	UpdatedAt    *time.Time `json:"updated_at"`

@@ -8,6 +8,20 @@ import (
 
 type categoryRepository struct{}
 
+func (c categoryRepository) Update(data *models.Category) (*models.Category, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	if err := db.Debug().Model(&models.Category{}).Where("id = ?", data.Id).
+		Update("category_name", data.CategoryName).Error; err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
 func (c categoryRepository) Show(categoryId int) (*models.Category, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {
@@ -37,10 +51,6 @@ func (c categoryRepository) GetAll() (*[]models.Category, error) {
 	return &data, nil
 }
 
-func NewCategoryRepository() contracts.CategoryRepository {
-	return categoryRepository{}
-}
-
 // Insert implements contracts.CategoryRepository.
 func (c categoryRepository) Insert(data models.Category) (*models.Category, error) {
 	db, err := database.DB.OpenDB()
@@ -53,4 +63,8 @@ func (c categoryRepository) Insert(data models.Category) (*models.Category, erro
 	}
 
 	return &data, nil
+}
+
+func NewCategoryRepository() contracts.CategoryRepository {
+	return categoryRepository{}
 }

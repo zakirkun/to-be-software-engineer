@@ -9,6 +9,28 @@ import (
 
 type categoryServices struct{}
 
+func (c categoryServices) Update(categoryId int, request types.RequestCreateCategory) (*types.ResponseCreateCategory, error) {
+	repo := repository.NewCategoryRepository()
+	dataCategory, err := repo.Show(categoryId)
+	if err != nil {
+		return nil, err
+	}
+
+	dataCategory.CategoryName = request.CategoryName
+
+	data, err := repo.Update(&models.Category{
+		Id:           dataCategory.Id,
+		CategoryName: dataCategory.CategoryName,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponseCreateCategory{
+		Category: data,
+	}, nil
+}
+
 func (c categoryServices) Show(categoryId int) (*types.ResponseCreateCategory, error) {
 	repo := repository.NewCategoryRepository()
 	data, err := repo.Show(categoryId)
@@ -39,7 +61,7 @@ func (c categoryServices) GetAll() (*types.ResponseListCategory, error) {
 func (c categoryServices) Insert(request types.RequestCreateCategory) (*types.ResponseCreateCategory, error) {
 	repo := repository.NewCategoryRepository()
 	data, err := repo.Insert(models.Category{
-		CategoryName: request.Name,
+		CategoryName: request.CategoryName,
 	})
 	if err != nil {
 		return nil, err
