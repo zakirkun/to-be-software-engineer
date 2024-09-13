@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"imzakir.dev/e-commerce/app/domains/contracts"
 	"imzakir.dev/e-commerce/app/domains/models"
 	"imzakir.dev/e-commerce/app/domains/types"
@@ -14,6 +15,10 @@ func (c categoryServices) Get(categoryId int) (*types.ResponseCategory, error) {
 	data, err := repo.Get(categoryId)
 	if err != nil {
 		return nil, err
+	}
+
+	if data.Id == 0 {
+		return nil, errors.New("category not found")
 	}
 
 	return &types.ResponseCategory{
@@ -47,6 +52,35 @@ func (c categoryServices) Insert(request types.RequestCreateCategory) (*types.Re
 	return &types.ResponseCreateCategory{
 		Category: data,
 	}, nil
+}
+
+func (c categoryServices) Update(request types.RequestCreateCategory, categoryId int) (*types.ResponseCreateCategory, error) {
+	repo := repository.NewCategoryRepository()
+
+	category, err := repo.Get(categoryId)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := repo.Update(categoryId, category.ToUpdateCategory(request.Name))
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponseCreateCategory{
+		Category: data,
+	}, nil
+}
+
+func (c categoryServices) Delete(categoryId int) error {
+	repo := repository.NewCategoryRepository()
+
+	err := repo.Delete(categoryId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewCategoryServices() contracts.CategoryServices {

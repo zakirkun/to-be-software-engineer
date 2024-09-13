@@ -29,6 +29,8 @@ func InitRouters() http.Handler {
 			category.POST("", categoryController.Insert)
 			category.GET("", categoryController.GetAll)
 			category.GET("/:id", categoryController.Get)
+			category.PUT("/:id", categoryController.Update)
+			category.DELETE("/:id", categoryController.Delete)
 		}
 	}
 

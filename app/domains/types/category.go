@@ -10,6 +10,10 @@ type ResponseCreateCategory struct {
 	Category *models.Category `json:"category"`
 }
 
+type ResponseDeleteCategory struct {
+	Message string `json:"message"`
+}
+
 type ResponseListCategory struct {
 	Category *[]models.Category `json:"category"`
 }

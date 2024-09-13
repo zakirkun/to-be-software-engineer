@@ -13,6 +13,33 @@ import (
 
 type categoryController struct{}
 
+func (c categoryController) Update(ctx echo.Context) error {
+	var request types.RequestCreateCategory
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
+	}
+
+	svc := services.NewCategoryServices()
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	data, err := svc.Update(request, id)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS", data))
+}
+
+func (c categoryController) Delete(ctx echo.Context) error {
+	svc := services.NewCategoryServices()
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	err := svc.Delete(id)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS", nil))
+}
+
 func (c categoryController) Get(ctx echo.Context) error {
 	svc := services.NewCategoryServices()
 	id, _ := strconv.Atoi(ctx.Param("id"))

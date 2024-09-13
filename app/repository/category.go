@@ -37,8 +37,17 @@ func (c categoryRepository) GetAll() (*[]models.Category, error) {
 	return &data, nil
 }
 
-func NewCategoryRepository() contracts.CategoryRepository {
-	return categoryRepository{}
+func (c categoryRepository) Update(categoryId int, data models.Category) (*models.Category, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	if err := db.Debug().Model(&models.Category{}).Where("id = ?", categoryId).Save(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }
 
 // Insert implements contracts.CategoryRepository.
@@ -53,4 +62,21 @@ func (c categoryRepository) Insert(data models.Category) (*models.Category, erro
 	}
 
 	return &data, nil
+}
+
+func (c categoryRepository) Delete(categoryId int) error {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return *err
+	}
+
+	if err := db.Debug().Delete(&models.Category{}, categoryId).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func NewCategoryRepository() contracts.CategoryRepository {
+	return categoryRepository{}
 }
