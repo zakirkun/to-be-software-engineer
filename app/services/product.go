@@ -10,6 +10,21 @@ import (
 type productService struct {
 }
 
+func (p productService) Delete(productId int) (bool, error) {
+	repo := repository.NewProductRepository()
+	dataProduct, err := repo.FindById(productId)
+	if err != nil {
+		return false, err
+	}
+
+	data, err := repo.Delete(*dataProduct)
+
+	if err != nil {
+		return false, err
+	}
+	return data, err
+}
+
 func (p productService) Update(productId int, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error) {
 	repo := repository.NewProductRepository()
 	dataProduct, err := repo.FindById(productId)

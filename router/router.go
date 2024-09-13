@@ -52,7 +52,7 @@ func InitRouters() http.Handler {
 			product.POST("/save", productController.Create)
 			product.GET("/", productController.GetAll)
 			product.GET("/:id", productController.GetDetail)
-			product.PUT("/:id", productController.Edit)
+			product.DELETE("/:id", productController.Delete)
 		}
 	}
 

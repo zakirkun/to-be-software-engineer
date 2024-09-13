@@ -9,6 +9,18 @@ import (
 type productRepository struct {
 }
 
+func (p productRepository) Delete(data models.Product) (bool, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return false, *err
+	}
+
+	if err := db.Delete(&data).Error; err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 func (p productRepository) Update(data models.Product) (*models.Product, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {

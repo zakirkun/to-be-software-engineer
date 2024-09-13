@@ -12,6 +12,23 @@ import (
 
 type productController struct{}
 
+func (p productController) Delete(ctx echo.Context) error {
+	paramId := ctx.Param("id")
+	id, err := strconv.Atoi(paramId)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "BAD REQUEST", err))
+	}
+
+	svc := services.NewProductService()
+
+	data, err := svc.Delete(id)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS DELETE PRODUCT", data))
+}
+
 func (p productController) Edit(ctx echo.Context) error {
 	paramId := ctx.Param("id")
 	id, err := strconv.Atoi(paramId)

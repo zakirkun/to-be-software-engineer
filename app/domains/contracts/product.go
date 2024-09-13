@@ -11,6 +11,7 @@ type ProductRepository interface {
 	FindAll() (*[]models.Product, error)
 	FindById(productId int) (*models.Product, error)
 	Update(data models.Product) (*models.Product, error)
+	Delete(data models.Product) (bool, error)
 }
 
 type ProductServices interface {
@@ -18,6 +19,7 @@ type ProductServices interface {
 	GetAllProducts() (*[]models.Product, error)
 	GetDetail(productId int) (*models.Product, error)
 	Update(productId int, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error)
+	Delete(productId int) (bool, error)
 }
 
 type ProductController interface {
@@ -25,4 +27,5 @@ type ProductController interface {
 	GetAll(ctx echo.Context) error
 	GetDetail(ctx echo.Context) error
 	Edit(ctx echo.Context) error
+	Delete(ctx echo.Context) error
 }
