@@ -13,6 +13,23 @@ import (
 
 type categoryController struct{}
 
+func (c categoryController) Delete(ctx echo.Context) error {
+	paramId := ctx.Param("id")
+	id, err := strconv.Atoi(paramId)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "BAD REQUEST", err))
+	}
+
+	svc := services.NewCategoryServices()
+
+	data, err := svc.Delete(id)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS DELETE CATEGORY", data))
+}
+
 func (c categoryController) Edit(ctx echo.Context) error {
 	paramId := ctx.Param("id")
 	id, err := strconv.Atoi(paramId)
@@ -33,7 +50,7 @@ func (c categoryController) Edit(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
 	}
 
-	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", data))
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS UPDATE CATEGORY", data))
 }
 
 func (c categoryController) Show(ctx echo.Context) error {
@@ -61,7 +78,7 @@ func (c categoryController) GetAll(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
 	}
 
-	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", data))
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS GET LIST CATEGORY", data))
 }
 
 // Insert implements contracts.CategoryController.
@@ -77,7 +94,7 @@ func (c categoryController) Insert(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
 	}
 
-	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS", data))
+	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS ADD CATEGORY", data))
 }
 
 func NewCategoryController() contracts.CategoryController {

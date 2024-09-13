@@ -9,6 +9,21 @@ import (
 
 type categoryServices struct{}
 
+func (c categoryServices) Delete(categoryId int) (bool, error) {
+	repo := repository.NewCategoryRepository()
+	dataCategory, err := repo.Show(categoryId)
+	if err != nil {
+		return false, err
+	}
+
+	data, err := repo.Delete(*dataCategory)
+	
+	if err != nil {
+		return false, err
+	}
+	return data, err
+}
+
 func (c categoryServices) Update(categoryId int, request types.RequestCreateCategory) (*types.ResponseCreateCategory, error) {
 	repo := repository.NewCategoryRepository()
 	dataCategory, err := repo.Show(categoryId)

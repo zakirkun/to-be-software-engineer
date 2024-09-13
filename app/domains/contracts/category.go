@@ -11,6 +11,7 @@ type CategoryRepository interface {
 	GetAll() (*[]models.Category, error)
 	Show(categoryId int) (*models.Category, error)
 	Update(data *models.Category) (*models.Category, error)
+	Delete(data models.Category) (bool, error)
 }
 
 type CategoryServices interface {
@@ -18,6 +19,7 @@ type CategoryServices interface {
 	GetAll() (*types.ResponseListCategory, error)
 	Show(categoryId int) (*types.ResponseCreateCategory, error)
 	Update(categoryId int, category types.RequestCreateCategory) (*types.ResponseCreateCategory, error)
+	Delete(categoryId int) (bool, error)
 }
 
 type CategoryController interface {
@@ -25,4 +27,5 @@ type CategoryController interface {
 	GetAll(ctx echo.Context) error
 	Show(ctx echo.Context) error
 	Edit(ctx echo.Context) error
+	Delete(ctx echo.Context) error
 }

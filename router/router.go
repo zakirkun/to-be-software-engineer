@@ -39,6 +39,7 @@ func InitRouters() http.Handler {
 			category.GET("/", categoryController.GetAll)
 			category.GET("/:id", categoryController.Show)
 			category.PUT("/:id", categoryController.Edit)
+			category.DELETE("/:id", categoryController.Delete)
 		}
 		customer := v1.Group("/auth")
 		{

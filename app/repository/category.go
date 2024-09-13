@@ -8,6 +8,19 @@ import (
 
 type categoryRepository struct{}
 
+func (c categoryRepository) Delete(data models.Category) (bool, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return false, *err
+	}
+
+	if err := db.Delete(&data).Error; err != nil {
+		return false, err
+	}
+	
+	return true, nil
+}
+
 func (c categoryRepository) Update(data *models.Category) (*models.Category, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {
