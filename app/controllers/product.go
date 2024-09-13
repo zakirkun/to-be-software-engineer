@@ -11,6 +11,17 @@ import (
 
 type productController struct{}
 
+func (p productController) GetAll(ctx echo.Context) error {
+	svc := services.NewProductService()
+
+	data, err := svc.GetAllProducts()
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS GET LIST PRODUCT", data))
+}
+
 func (p productController) Create(ctx echo.Context) error {
 	var request types.RequestCreateProduct
 	if err := ctx.Bind(&request); err != nil {
@@ -25,7 +36,6 @@ func (p productController) Create(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS ADD PRODUCT", data))
-
 }
 
 func NewProductController() contracts.ProductController {

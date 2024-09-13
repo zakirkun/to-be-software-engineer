@@ -10,6 +10,15 @@ import (
 type productService struct {
 }
 
+func (p productService) GetAllProducts() (*[]models.Product, error) {
+	repo := repository.NewProductRepository()
+	data, err := repo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
 func (p productService) AddProduct(request types.RequestCreateProduct) (*types.ResponseCreateProduct, error) {
 	repo := repository.NewProductRepository()
 	data, err := repo.Insert(models.Product{

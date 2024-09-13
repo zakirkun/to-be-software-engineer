@@ -7,7 +7,7 @@ import (
 
 type Product struct {
 	Id                 int             `gorm:"primary_key;auto_increment" json:"-"`
-	CategoryId         int             `gorm:"username;unique" json:"username"`
+	CategoryId         int             `gorm:"category_id;unique" json:"category_id"`
 	ProductName        string          `gorm:"product_name" json:"product_name"`
 	ProductImage       string          `gorm:"product_image" json:"product_image"`
 	ProductDescription string          `gorm:"product_description" json:"product_description"`

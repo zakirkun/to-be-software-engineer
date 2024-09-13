@@ -50,6 +50,7 @@ func InitRouters() http.Handler {
 		product := v1.Group("/product")
 		{
 			product.POST("/save", productController.Create)
+			product.GET("/", productController.GetAll)
 		}
 	}
 
