@@ -14,6 +14,7 @@ import (
 type customerServices struct{}
 
 func (c customerServices) Login(customer types.RequestLogin) (*types.ResponseLogin, error) {
+	repo := repository.NewCustomerRepository()
 	dataCustomer, err := repo.GetByUsername(customer.Username)
 	if err != nil {
 		return nil, err
@@ -38,9 +39,8 @@ func (c customerServices) Login(customer types.RequestLogin) (*types.ResponseLog
 	}, nil
 }
 
-var repo = repository.NewCustomerRepository()
-
 func (c customerServices) AddCustomer(request types.RequestCreateCustomer) (*types.ResponseCreateCustomer, error) {
+	repo := repository.NewCustomerRepository()
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
