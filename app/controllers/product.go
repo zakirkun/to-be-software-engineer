@@ -1,0 +1,33 @@
+package controllers
+
+import (
+	"github.com/labstack/echo"
+	"imzakir.dev/e-commerce/app/domains/contracts"
+	"imzakir.dev/e-commerce/app/domains/types"
+	"imzakir.dev/e-commerce/app/services"
+	"imzakir.dev/e-commerce/utils"
+	"net/http"
+)
+
+type productController struct{}
+
+func (p productController) Create(ctx echo.Context) error {
+	var request types.RequestCreateProduct
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
+	}
+
+	svc := services.NewProductService()
+
+	data, err := svc.AddProduct(request)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS ADD PRODUCT", data))
+
+}
+
+func NewProductController() contracts.ProductController {
+	return productController{}
+}
