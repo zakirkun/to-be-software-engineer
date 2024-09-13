@@ -10,7 +10,7 @@ type CategoryRepository interface {
 	Insert(data models.Category) (*models.Category, error)
 	GetAll() (*[]models.Category, error)
 	Show(categoryId int) (*models.Category, error)
-	Update(data *models.Category) (*models.Category, error)
+	Update(data models.Category) (*models.Category, error)
 	Delete(data models.Category) (bool, error)
 }
 

@@ -33,10 +33,7 @@ func (c categoryServices) Update(categoryId int, request types.RequestCreateCate
 
 	dataCategory.CategoryName = request.CategoryName
 
-	data, err := repo.Update(&models.Category{
-		Id:           dataCategory.Id,
-		CategoryName: dataCategory.CategoryName,
-	})
+	data, err := repo.Update(*dataCategory)
 
 	//data, err := repo.Update(*dataCategory)
 

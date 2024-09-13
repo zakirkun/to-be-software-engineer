@@ -17,22 +17,21 @@ func (c categoryRepository) Delete(data models.Category) (bool, error) {
 	if err := db.Delete(&data).Error; err != nil {
 		return false, err
 	}
-	
+
 	return true, nil
 }
 
-func (c categoryRepository) Update(data *models.Category) (*models.Category, error) {
+func (c categoryRepository) Update(data models.Category) (*models.Category, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {
 		return nil, *err
 	}
 
-	if err := db.Debug().Model(&models.Category{}).Where("id = ?", data.Id).
-		Update("category_name", data.CategoryName).Error; err != nil {
+	if err := db.Save(&data).Error; err != nil {
 		return nil, err
 	}
 
-	return data, nil
+	return &data, nil
 }
 
 func (c categoryRepository) Show(categoryId int) (*models.Category, error) {
