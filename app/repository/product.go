@@ -9,6 +9,20 @@ import (
 type productRepository struct {
 }
 
+func (p productRepository) FindById(productId int) (*models.Product, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	var data models.Product
+
+	if err := db.Debug().Model(&models.Product{}).Where("id = ?", productId).First(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
 func (p productRepository) FindAll() (*[]models.Product, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {
