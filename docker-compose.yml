@@ -12,7 +12,7 @@ services:
       db:
         condition: service_healthy
     networks:
-      - infrastructure
+    - infrastructure
   db:
     image: mysql:latest
     container_name: mysql
@@ -29,14 +29,27 @@ services:
       - mysql_data:/var/lib/mysql
       - "./:/docker-entrypoint-initdb.d"
     networks:
-      - infrastructure
+    - infrastructure
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 3
+      
+  cache:
+    image: redis:alpine
+    container_name: cache
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - cache:/data
+    networks:
+      - infrastructure
+      
 volumes:
   mysql_data:
+  cache:
 
 networks:
   infrastructure:
