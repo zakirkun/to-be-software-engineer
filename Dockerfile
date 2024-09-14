@@ -26,10 +26,9 @@ WORKDIR /app
 
 # Step 9: Copy the Go app from the builder stage
 COPY --from=builder /app/main .
+
+# Step 10: Copy Configuration
 COPY config.toml .
 
-# Step 10: Expose the port the app runs on
-EXPOSE 3333
-
 # Step 11: Command to run the app
-CMD ["./main"]
+CMD ["./main", "-c", "config.toml"]
