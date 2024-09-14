@@ -28,7 +28,8 @@ func (c customerServices) Login(customer types.RequestLogin) (*types.ResponseLog
 
 	jwtClaims := jwt.NewJWTImpl(signature, expired)
 	token, err := jwtClaims.GenerateToken(map[string]interface{}{
-		"id": dataCustomer.Username,
+		"username": dataCustomer.Username,
+		"type":     "Bearer",
 	})
 	if err != nil {
 		return nil, err
