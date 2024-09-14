@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"imzakir.dev/e-commerce/bootstrap"
+	"imzakir.dev/e-commerce/pkg/cache"
 	"imzakir.dev/e-commerce/pkg/config"
 	"imzakir.dev/e-commerce/pkg/database"
 	"imzakir.dev/e-commerce/pkg/server"
@@ -23,9 +24,9 @@ func init() {
 func main() {
 	setConfig()
 
-	infra := bootstrap.NewInfrastructure(SetDatabase(), SetWebServer())
+	infra := bootstrap.NewInfrastructure(SetDatabase(), SetCache(), SetWebServer())
 	infra.Database()
-
+	infra.Cache()
 	infra.WebServer()
 }
 
@@ -36,6 +37,14 @@ func setConfig() {
 		os.Exit(1)
 	}
 }
+
+func SetCache() cache.Cache {
+	return cache.Cache{
+		Addr:     config.GetString("cache.cache_addr"),
+		Password: config.GetString("cache.cache_password"),
+	}
+}
+
 func SetDatabase() database.DBModel {
 	return database.DBModel{
 		ServerMode:   config.GetString("server.mode"),

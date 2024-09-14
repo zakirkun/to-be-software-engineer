@@ -25,3 +25,7 @@ signature_key = "SuperShy!"
 
 [message_broker]
 rabbimq_url=""
+
+[cache]
+cache_addr = "localhost:6379"
+cache_password = ""
