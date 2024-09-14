@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     depends_on:
       - db
+      - cache
     networks:
       - infrastructure
   db:
@@ -32,8 +33,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    container_name: cache
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - cache:/data
 volumes:
   mysql_data:
+  cache:
 
 networks:
   infrastructure:
