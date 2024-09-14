@@ -4,9 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strconv"
-	"time"
-
 	"github.com/redis/go-redis/v9"
 	"imzakir.dev/e-commerce/app/domains/contracts"
 	"imzakir.dev/e-commerce/app/domains/models"
@@ -14,41 +11,56 @@ import (
 	"imzakir.dev/e-commerce/app/repository"
 	"imzakir.dev/e-commerce/pkg/cache"
 	"imzakir.dev/e-commerce/utils"
+	"strconv"
+	"time"
 )
 
 type categoryServices struct{}
 
 func (c categoryServices) Delete(categoryId int) (bool, error) {
 	repo := repository.NewCategoryRepository()
-	dataCategory, err := repo.Show(categoryId)
+	getCategory, err := repo.Show(categoryId)
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 
-	data, err := repo.Delete(*dataCategory)
-
-	if err != nil {
-		return false, err
+	if getCategory.Id == 0 {
+		return false, errors.New("record not found")
 	}
-	return data, err
+
+	data, err := repo.Delete(*getCategory)
+
+	_id := strconv.Itoa(getCategory.Id)
+
+	// Delete cache
+	cache.CACHE.Del(context.Background(), fmt.Sprintf("category:%v", _id))
+
+	return data, nil
 }
 
 func (c categoryServices) Update(categoryId int, request types.RequestCreateCategory) (*types.ResponseCreateCategory, error) {
 	repo := repository.NewCategoryRepository()
-	dataCategory, err := repo.Show(categoryId)
+
+	getCategory, err := repo.Show(categoryId)
 	if err != nil {
 		return nil, err
 	}
 
-	dataCategory.CategoryName = request.CategoryName
+	if getCategory.Id == 0 {
+		return nil, errors.New("record not found")
+	}
 
-	data, err := repo.Update(*dataCategory)
+	getCategory.CategoryName = request.CategoryName
 
-	//data, err := repo.Update(*dataCategory)
+	data, err := repo.Update(*getCategory)
 
 	if err != nil {
 		return nil, err
 	}
+	_id := strconv.Itoa(getCategory.Id)
+
+	// Delete cache
+	cache.CACHE.Del(context.Background(), fmt.Sprintf("category:%v", _id))
 
 	return &types.ResponseCreateCategory{
 		Category: data,
@@ -57,14 +69,35 @@ func (c categoryServices) Update(categoryId int, request types.RequestCreateCate
 
 func (c categoryServices) Show(categoryId int) (*types.ResponseCreateCategory, error) {
 	repo := repository.NewCategoryRepository()
-	data, err := repo.Show(categoryId)
 
-	if err != nil {
-		return nil, err
+	// check cache first
+	_id := strconv.Itoa(categoryId)
+	getKey, err := cache.CACHE.Get(context.Background(), fmt.Sprintf("category:%v", _id)).Result()
+	if err == redis.Nil {
+		getCategory, err := repo.Show(categoryId)
+		if err != nil {
+			return nil, err
+		}
+
+		if getCategory.Id == 0 {
+			return nil, errors.New("record not found")
+		}
+
+		toJson := utils.StructToJson(&getCategory)
+
+		cache.CACHE.Set(context.Background(), fmt.Sprintf("category:%v", _id), toJson, time.Duration(time.Minute*30))
+		return &types.ResponseCreateCategory{
+			Category: getCategory,
+		}, nil
+	}
+
+	var parse models.Category
+	if ok := utils.JsonToSruct([]byte(getKey), &parse); !ok {
+		return nil, errors.ErrUnsupported
 	}
 
 	return &types.ResponseCreateCategory{
-		Category: data,
+		Category: &parse,
 	}, nil
 }
 
