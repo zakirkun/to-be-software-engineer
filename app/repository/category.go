@@ -8,6 +8,35 @@ import (
 
 type categoryRepository struct{}
 
+// Delete implements contracts.CategoryRepository.
+func (c categoryRepository) Delete(data models.Category) (bool, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return false, *err
+	}
+
+	if err := db.Delete(&data).Error; err != nil {
+		return false, nil
+	}
+
+	return true, nil
+
+}
+
+// Update implements contracts.CategoryRepository.
+func (c categoryRepository) Update(data models.Category) (*models.Category, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	if err := db.Save(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
 // GetDetail implements contracts.CategoryRepository.
 func (c categoryRepository) GetDetail(id int) (*models.Category, error) {
 	db, err := database.DB.OpenDB()

@@ -11,6 +11,45 @@ import (
 
 type categoryServices struct{}
 
+// Delete implements contracts.CategoryServices.
+func (c categoryServices) Delete(id int) (bool, error) {
+	repo := repository.NewCategoryRepository()
+	dataCategory, err := repo.GetDetail(id)
+	if err != nil {
+		return false, err
+	}
+
+	data, err := repo.Delete(*dataCategory)
+
+	if err != nil {
+		return false, err
+	}
+	return data, err
+}
+
+// Update implements contracts.CategoryServices.
+func (c categoryServices) Update(id int, request types.RequestCreateCategory) (*types.ResponseCreateCategory, error) {
+	repo := repository.NewCategoryRepository()
+	dataCategory, err := repo.GetDetail(id)
+	if err != nil {
+		return nil, err
+	}
+
+	dataCategory.CategoryName = request.Name
+
+	data, err := repo.Update(*dataCategory)
+
+	//data, err := repo.Update(*dataCategory)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponseCreateCategory{
+		Category: data,
+	}, nil
+}
+
 // GetDetail implements contracts.CategoryServices.
 func (c categoryServices) GetDetail(id int) (*types.ResponseGetDetailCategory, error) {
 	repo := repository.NewCategoryRepository()
