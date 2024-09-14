@@ -1,10 +1,12 @@
 package repository
 
 import (
-	"imzakir.dev/e-commerce/app/domains/contracts"
-	"imzakir.dev/e-commerce/app/domains/models"
-	"imzakir.dev/e-commerce/pkg/database"
-)
+	"log"
+
+		"imzakir.dev/e-commerce/app/domains/contracts"
+		"imzakir.dev/e-commerce/app/domains/models"
+		"imzakir.dev/e-commerce/pkg/database"
+	)
 
 type categoryRepository struct{}
 
@@ -23,9 +25,7 @@ func (c categoryRepository) GetAll() (*[]models.Category, error) {
 	return &data, nil
 }
 
-func NewCategoryRepository() contracts.CategoryRepository {
-	return categoryRepository{}
-}
+
 
 // Insert implements contracts.CategoryRepository.
 func (c categoryRepository) Insert(data models.Category) (*models.Category, error) {
@@ -39,4 +39,53 @@ func (c categoryRepository) Insert(data models.Category) (*models.Category, erro
 	}
 
 	return &data, nil
+}
+
+func (c categoryRepository) FindCategoryById(id int) (*models.Category, error){
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	var data models.Category
+	if err := db.Debug().Model(&models.Category{}).Where("id = ?",id).First(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data , nil
+}
+
+func (c categoryRepository) DeleteById(id int) (*models.Category, error) {
+	db, err := database.DB.OpenDB()
+
+	if err != nil {
+		return nil, *err
+	}
+
+	var data models.Category
+	if err := db.Debug().Model(&models.Category{}).Where("id = ?", id).Delete(&data).Error; err != nil {
+		return nil,err
+	}
+	log.Println("error delete :",err)
+	return  &data, nil
+
+}
+
+func (c categoryRepository) Update(id int, data models.Category) (*models.Category, error){
+	db, err := database.DB.OpenDB()
+
+	if err != nil {
+		return nil, *err
+		
+	}
+
+	if err := db.Debug().Model(&models.Category{}).Where("id = ?", id).Updates(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
+
+func NewCategoryRepository() contracts.CategoryRepository {
+	return categoryRepository{}
 }

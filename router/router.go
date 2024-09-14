@@ -15,6 +15,8 @@ func InitRouters() http.Handler {
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
 
+
+
 	// Auth Handler
 
 	e.GET("/", func(c echo.Context) error {
@@ -28,15 +30,29 @@ func InitRouters() http.Handler {
 
 	// controller
 	categoryController := controllers.NewCategoryController()
-
+	productController := controllers.NewProductController()
 	// Versioning
+
 	v1 := e.Group("/v1")
 	{
 		category := v1.Group("/category")
 		{
 			category.POST("/save", categoryController.Insert)
 			category.GET("/", categoryController.GetAll)
+			category.GET("/:id", categoryController.Show)
+			category.DELETE("/:id", categoryController.Delete)
+			category.PUT("/:id", categoryController.Edit)
 		}
+
+		product := v1.Group("/product")
+		{ 
+			product.POST("/save", productController.Insert)
+			product.GET("/", productController.GetAll)
+			product.GET("/:id", productController.Show)
+			product.DELETE("/:id", productController.Delete )
+		}
+
+		
 	}
 
 	return e

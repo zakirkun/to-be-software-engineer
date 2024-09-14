@@ -12,11 +12,11 @@ import (
 	"imzakir.dev/e-commerce/utils"
 )
 
-type categoryController struct{}
+type productController struct{}
 
 // GetAll implements contracts.CategoryController.
-func (c categoryController) GetAll(ctx echo.Context) error {
-	svc := services.NewCategoryServices()
+func (c productController) GetAll(ctx echo.Context) error {
+	svc := services.NewProductServices()
 	data, err := svc.GetAll()
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
@@ -26,13 +26,13 @@ func (c categoryController) GetAll(ctx echo.Context) error {
 }
 
 // Insert implements contracts.CategoryController.
-func (c categoryController) Insert(ctx echo.Context) error {
-	var request types.RequestCreateCategory
+func (c productController) Insert(ctx echo.Context) error {
+	var request types.RequestCreateProduct
 	if err := ctx.Bind(&request); err != nil {
 		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
 	}
 
-	svc := services.NewCategoryServices()
+	svc := services.NewProductServices()
 	data, err := svc.Insert(request)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
@@ -42,14 +42,14 @@ func (c categoryController) Insert(ctx echo.Context) error {
 }
 
 //get category by id
-func (c categoryController) Show(ctx echo.Context) error {
+func (c productController) Show(ctx echo.Context) error {
 	paramId := ctx.Param("id") 
 	id, err := strconv.Atoi(paramId)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
 	}
 
-	data, err := services.NewCategoryServices().GetCategoryById(id)
+	data, err := services.NewProductServices().GetProductById(id)
 
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
@@ -59,10 +59,8 @@ func (c categoryController) Show(ctx echo.Context) error {
 
 }
 
-
-
 //delete by id
-func (c categoryController) Delete(ctx echo.Context) error  {
+func (c productController) Delete(ctx echo.Context) error  {
 	paramId := ctx.Param("id")
 	id, err := strconv.Atoi(paramId)
 
@@ -71,42 +69,22 @@ func (c categoryController) Delete(ctx echo.Context) error  {
 	}
 
 	
-	data, err := services.NewCategoryServices().GetCategoryById(id)
+	data, err := services.NewProductServices().GetProductById(id)
 
 	log.Println(data)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError,"INTERNAL_ERROR", err))
 	}
 
-	  services.NewCategoryServices().DeleteId(id)
+	  services.NewProductServices().DeleteId(id)
 
 	return ctx.JSON(http.StatusOK, utils.SetSuccessDeleteReponse(http.StatusOK, "SUCCESS"))
 	
 	
 }
 
-
-func (c categoryController) Edit(ctx echo.Context) error {
-	var request types.RequestCreateCategory
-	paramId := ctx.Param("id")
-	id, err := strconv.Atoi(paramId)
-
-	if err := ctx.Bind(&request); err != nil {
-		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
-	}
-
-	svc := services.NewCategoryServices()
-	data, err := svc.UpdateCategoryById(id,request)
-	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
-	}
-
-	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS", data))
-}
-
-
-func NewCategoryController() contracts.CategoryController {
-	return categoryController{}
+func NewProductController() contracts.ProductController {
+	return productController{}
 }
 
 

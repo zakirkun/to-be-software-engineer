@@ -11,3 +11,10 @@ type ErrorResponse struct {
 	Message    string `json:"message"`
 	Error      string `json:"error"`
 }
+
+type SuccessDeleteResponse struct {
+	StatusCode int    `json:"status_code"`
+	Message    string `json:"message"`
+	
+}
+
