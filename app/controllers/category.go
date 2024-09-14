@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -12,6 +13,45 @@ import (
 )
 
 type categoryController struct{}
+
+// Delete implements contracts.CategoryController.
+func (c categoryController) Delete(ctx echo.Context) error {
+	id := ctx.Param("id")
+	if id == "" {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", errors.New("invalid id")))
+	}
+
+	_id, _ := strconv.Atoi(id)
+	svc := services.NewCategoryServices()
+	if err := svc.Delete(uint(_id)); err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", nil))
+}
+
+// Update implements contracts.CategoryController.
+func (c categoryController) Update(ctx echo.Context) error {
+
+	var reuqest types.RequestUpdateCategory
+	if err := ctx.Bind(&reuqest); err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
+	}
+
+	id := ctx.Param("id")
+	if id == "" {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", errors.New("invalid id")))
+	}
+
+	_id, _ := strconv.Atoi(id)
+	svc := services.NewCategoryServices()
+	updated, err := svc.Update(uint(_id), reuqest)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", updated))
+}
 
 // GetByID implements contracts.CategoryController.
 func (c categoryController) GetByID(ctx echo.Context) error {

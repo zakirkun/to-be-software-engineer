@@ -18,6 +18,67 @@ import (
 
 type categoryServices struct{}
 
+// Delete implements contracts.CategoryServices.
+func (c categoryServices) Delete(id uint) error {
+	repo := repository.NewCategoryRepository()
+	// check if data exists
+	getCategory, err := repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+
+	if getCategory.Id == 0 {
+		return errors.New("record not found")
+	}
+
+	if err := repo.Delete(id); err != nil {
+		return err
+	}
+
+	// id category
+	_id := strconv.Itoa(getCategory.Id)
+
+	// Delete cache
+	cache.CACHE.Del(context.Background(), fmt.Sprintf("category:%v", _id))
+
+	return nil
+}
+
+// Update implements contracts.CategoryServices.
+func (c categoryServices) Update(id uint, request types.RequestUpdateCategory) (*types.ResponseUpdateCategory, error) {
+
+	repo := repository.NewCategoryRepository()
+
+	// check if data exists
+	getCategory, err := repo.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if getCategory.Id == 0 {
+		return nil, errors.New("record not found")
+	}
+
+	// update data
+	updateCategory, err := repo.Update(uint(getCategory.Id), models.Category{
+		CategoryName: request.Name,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	// id category
+	_id := strconv.Itoa(getCategory.Id)
+
+	// Delete cache
+	cache.CACHE.Del(context.Background(), fmt.Sprintf("category:%v", _id))
+
+	return &types.ResponseUpdateCategory{
+		Category: updateCategory,
+	}, nil
+}
+
 // GetByID implements contracts.CategoryServices.
 func (c categoryServices) GetByID(id uint) (*types.ResponseCreateCategory, error) {
 

@@ -14,6 +14,7 @@ func InitRouters() http.Handler {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
+	e.Use(middleware.RequestID())
 
 	// Auth Handler
 
@@ -37,6 +38,8 @@ func InitRouters() http.Handler {
 			category.POST("/save", categoryController.Insert)
 			category.GET("/", categoryController.GetAll)
 			category.GET("/:id", categoryController.GetByID)
+			category.PUT("/:id", categoryController.Update)
+			category.DELETE("/:id", categoryController.Delete)
 		}
 	}
 

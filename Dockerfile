@@ -1,26 +1,35 @@
-# Start from the official Golang image
-FROM golang:latest
+# Step 1: Use the official Golang image to build the app
+# This uses the latest Go version
+FROM golang:1.23.1-alpine3.20 AS builder
 
-# Set necessary environment variables needed for our image
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
-
-# Set the working directory inside the container
+# Step 2: Set the working directory inside the container
 WORKDIR /app
 
-# Copy go mod and sum files
+# Step 3: Copy the go.mod and go.sum files to the working directory
 COPY go.mod go.sum ./
 
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+# Step 4: Download all Go module dependencies
+# Dependencies will be cached if the go.mod and go.sum files haven't changed
 RUN go mod download
 
-# Copy the source code into the container
+# Step 5: Copy the rest of the application code to the container
 COPY . .
 
-# Build the Go app
+# Step 6: Build the Go app
 RUN go build -o main .
 
-# Command to run the executable
-ENTRYPOINT  [ "./main" , "-c", "config.toml"]
+# Step 7: Use a minimal base image for running the app
+FROM alpine:latest
+
+# Step 8: Set the working directory for the minimal base image
+WORKDIR /app
+
+# Step 9: Copy the Go app from the builder stage
+COPY --from=builder /app/main .
+COPY config.toml .
+
+# Step 10: Expose the port the app runs on
+EXPOSE 3333
+
+# Step 11: Command to run the app
+CMD ["./main"]

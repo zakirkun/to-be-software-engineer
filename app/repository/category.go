@@ -8,6 +8,34 @@ import (
 
 type categoryRepository struct{}
 
+// Delete implements contracts.CategoryRepository.
+func (c categoryRepository) Delete(id uint) error {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return *err
+	}
+
+	if err := db.Debug().Where("id = ?", id).Delete(models.Category{}).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Update implements contracts.CategoryRepository.
+func (c categoryRepository) Update(id uint, data models.Category) (*models.Category, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	if err := db.Debug().Model(&models.Category{}).Where("id = ?", id).Updates(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
 // GetByID implements contracts.CategoryRepository.
 func (c categoryRepository) GetByID(id uint) (*models.Category, error) {
 	db, err := database.DB.OpenDB()
@@ -16,7 +44,7 @@ func (c categoryRepository) GetByID(id uint) (*models.Category, error) {
 	}
 
 	var data models.Category
-	if err := db.Model(&models.Category{}).Where("id = ?", id).Find(&data).Error; err != nil {
+	if err := db.Debug().Model(&models.Category{}).Where("id = ?", id).Find(&data).Error; err != nil {
 		return nil, err
 	}
 
