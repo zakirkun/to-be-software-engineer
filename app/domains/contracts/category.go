@@ -12,6 +12,7 @@ type CategoryRepository interface {
 	FindCategoryById(id int) (*models.Category, error)
 	Update(id int, data models.Category) (*models.Category, error)
 	DeleteById(id int ) (*models.Category,error)
+	GetByID(id uint) (*models.Category, error)
 }
 
 type CategoryServices interface {
@@ -20,6 +21,7 @@ type CategoryServices interface {
 	GetCategoryById(id int)  (*types.ResponseCreateCategory, error)
 	UpdateCategoryById(id int, request types.RequestCreateCategory) (*types.ResponseCreateCategory, error)
 	DeleteId (id int) (*types.ResponseCreateCategory, error)
+	GetByID(id uint) (*types.ResponseCreateCategory, error)
 }
 
 type CategoryController interface {
@@ -28,4 +30,6 @@ type CategoryController interface {
 	Show(ctx echo.Context) error
 	Edit(ctx echo.Context) error
 	Delete(ctx echo.Context) error
-} 
+
+	GetByID(ctx echo.Context) error
+}

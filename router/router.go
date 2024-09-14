@@ -42,6 +42,7 @@ func InitRouters() http.Handler {
 			category.GET("/:id", categoryController.Show)
 			category.DELETE("/:id", categoryController.Delete)
 			category.PUT("/:id", categoryController.Edit)
+			category.GET("/detail/:id", categoryController.GetByID)
 		}
 
 		product := v1.Group("/product")

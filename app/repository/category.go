@@ -10,6 +10,21 @@ import (
 
 type categoryRepository struct{}
 
+// GetByID implements contracts.CategoryRepository.
+func (c categoryRepository) GetByID(id uint) (*models.Category, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	var data models.Category
+	if err := db.Model(&models.Category{}).Where("id = ?", id).Find(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
 // GetAll implements contracts.CategoryRepository.
 func (c categoryRepository) GetAll() (*[]models.Category, error) {
 	db, err := database.DB.OpenDB()
