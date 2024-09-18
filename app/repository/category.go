@@ -8,6 +8,21 @@ import (
 
 type categoryRepository struct{}
 
+// GetByCategory implements contracts.CategoryRepository.
+func (c categoryRepository) GetByCategory(cat_id uint) (*models.Category, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	var data models.Category
+	if err := db.Preload("Products").Where("id = ?", cat_id).Find(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
 // Delete implements contracts.CategoryRepository.
 func (c categoryRepository) Delete(id uint) error {
 	db, err := database.DB.OpenDB()

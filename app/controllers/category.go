@@ -14,6 +14,34 @@ import (
 
 type categoryController struct{}
 
+// Pagination implements contracts.CategoryController.
+func (c categoryController) Pagination(ctx echo.Context) error {
+
+	data, err := services.NewCategoryServices().Pagination(ctx)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", data))
+}
+
+// GetByCategory implements contracts.CategoryController.
+func (c categoryController) GetByCategory(ctx echo.Context) error {
+	id := ctx.Param("id")
+	if id == "" {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", errors.New("invalid id")))
+	}
+
+	_id, _ := strconv.Atoi(id)
+	svc := services.NewCategoryServices()
+	data, err := svc.GetByCategory(uint(_id))
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", data))
+}
+
 // Delete implements contracts.CategoryController.
 func (c categoryController) Delete(ctx echo.Context) error {
 	id := ctx.Param("id")

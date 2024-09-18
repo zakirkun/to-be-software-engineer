@@ -7,16 +7,51 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/labstack/echo"
+	"github.com/morkid/paginate"
 	"github.com/redis/go-redis/v9"
 	"imzakir.dev/e-commerce/app/domains/contracts"
 	"imzakir.dev/e-commerce/app/domains/models"
 	"imzakir.dev/e-commerce/app/domains/types"
 	"imzakir.dev/e-commerce/app/repository"
 	"imzakir.dev/e-commerce/pkg/cache"
+	"imzakir.dev/e-commerce/pkg/database"
 	"imzakir.dev/e-commerce/utils"
 )
 
 type categoryServices struct{}
+
+// Pagination implements contracts.CategoryServices.
+func (c categoryServices) Pagination(ctx echo.Context) (*paginate.Page, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	stmt := db.Model(&models.Category{})
+	pg := paginate.New()
+	page := pg.With(stmt).Request(ctx.Request()).Response(&models.Category{})
+
+	return &page, nil
+
+}
+
+// GetByCategory implements contracts.CategoryServices.
+func (c categoryServices) GetByCategory(cat_id uint) (*types.ResponseCreateCategory, error) {
+	repo := repository.NewCategoryRepository()
+	getCategory, err := repo.GetByCategory(cat_id)
+	if err != nil {
+		return nil, err
+	}
+
+	if getCategory.Id == 0 {
+		return nil, errors.New("record not found")
+	}
+
+	return &types.ResponseCreateCategory{
+		Category: getCategory,
+	}, nil
+}
 
 // Delete implements contracts.CategoryServices.
 func (c categoryServices) Delete(id uint) error {

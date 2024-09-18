@@ -29,6 +29,7 @@ func InitRouters() http.Handler {
 
 	// controller
 	categoryController := controllers.NewCategoryController()
+	productController := controllers.NewProductController()
 
 	// Versioning
 	v1 := e.Group("/v1")
@@ -40,6 +41,18 @@ func InitRouters() http.Handler {
 			category.GET("/:id", categoryController.GetByID)
 			category.PUT("/:id", categoryController.Update)
 			category.DELETE("/:id", categoryController.Delete)
+			category.GET("/search", categoryController.Pagination)
+		}
+
+		product := v1.Group("/product")
+		{
+			product.GET("/category/:id", categoryController.GetByCategory)
+			product.POST("/save", productController.Insert)
+			product.GET("/", productController.GetAll)
+			product.GET("/:id", productController.GetByID)
+			product.PUT("/:id", productController.Update)
+			product.DELETE("/:id", productController.Delete)
+			product.GET("/search", productController.Pagination)
 		}
 	}
 

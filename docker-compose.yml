@@ -14,14 +14,16 @@ services:
     networks:
     - infrastructure
   db:
-    image: mysql:latest
+    image: mysql:8.0.38
     container_name: db
+    restart: always
     environment:
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: toko_online
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+      TZ: "Asia/Jakarta"
     ports:
       - "3306:3306"
     volumes:
