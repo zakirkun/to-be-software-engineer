@@ -6,8 +6,8 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
-	"imzakir.dev/e-commerce/pkg/config"
-	"imzakir.dev/e-commerce/pkg/jwt"
+	"teukufuad/e-commerce/pkg/config"
+	"teukufuad/e-commerce/pkg/jwt"
 )
 
 func AuthMiddleware(h echo.HandlerFunc) echo.HandlerFunc {

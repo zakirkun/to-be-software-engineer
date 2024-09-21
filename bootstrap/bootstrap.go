@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 
-	"imzakir.dev/e-commerce/pkg/cache"
-	"imzakir.dev/e-commerce/pkg/database"
-	"imzakir.dev/e-commerce/pkg/rabbitmq"
-	"imzakir.dev/e-commerce/pkg/server"
+	"teukufuad/e-commerce/pkg/cache"
+	"teukufuad/e-commerce/pkg/database"
+	"teukufuad/e-commerce/pkg/rabbitmq"
+	"teukufuad/e-commerce/pkg/server"
 )
 
 type Infrastructure interface {

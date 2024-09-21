@@ -7,13 +7,12 @@ import (
 	"teukufuad/e-commerce/router"
 	"time"
 
-	"imzakir.dev/e-commerce/bootstrap"
-	"imzakir.dev/e-commerce/pkg/cache"
-	"imzakir.dev/e-commerce/pkg/config"
-	"imzakir.dev/e-commerce/pkg/database"
-	"imzakir.dev/e-commerce/pkg/rabbitmq"
-	"imzakir.dev/e-commerce/pkg/server"
-	"imzakir.dev/e-commerce/router"
+	"teukufuad/e-commerce/bootstrap"
+	"teukufuad/e-commerce/pkg/cache"
+	"teukufuad/e-commerce/pkg/config"
+	"teukufuad/e-commerce/pkg/database"
+	"teukufuad/e-commerce/pkg/rabbitmq"
+	"teukufuad/e-commerce/pkg/server"
 )
 
 var configFile *string

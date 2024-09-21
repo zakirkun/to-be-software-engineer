@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
-	"imzakir.dev/e-commerce/app/services"
-	"imzakir.dev/e-commerce/pkg/config"
-	"imzakir.dev/e-commerce/pkg/rabbitmq"
+	"teukufuad/e-commerce/app/services"
+	"teukufuad/e-commerce/pkg/config"
+	"teukufuad/e-commerce/pkg/rabbitmq"
 )
 
 var configFile *string
@@ -32,7 +32,7 @@ func main() {
 		log.Printf("Recive Messages: %v", string(payload))
 
 		return nil
-	}, services.NewOrderServices().HandleSentEmail)
+	}, services.NewTransactionService().HandleSentEmail)
 }
 
 func setConfig() {

@@ -48,8 +48,8 @@ func SendEmail(to, htmlBody string) error {
 	// setup smtp
 	smtp.Host = "smtp.mailersend.net"
 	smtp.Port = 587
-	smtp.Username = "MS_83WUWh@mail.zkr.my.id"
-	smtp.Password = "qelJeHORJasdWO0j"
+	smtp.Username = "MS_LNYqz8@trial-pq3enl6m238g2vwr.mlsender.net"
+	smtp.Password = "OSlDGa6dpalN4S29"
 	smtp.Encryption = mail.EncryptionSTARTTLS
 
 	// Variable to keep alive connection
@@ -70,7 +70,7 @@ func SendEmail(to, htmlBody string) error {
 
 	// New email simple html with inline and CC
 	email := mail.NewMSG()
-	email.SetFrom(fmt.Sprintf("From %v <%v>", "TOKO ONLINE", "MS_83WUWh@mail.zkr.my.id")).
+	email.SetFrom(fmt.Sprintf("From %v <%v>", "TOKO ONLINE", "MS_LNYqz8@trial-pq3enl6m238g2vwr.mlsender.net")).
 		AddTo(to).
 		SetSubject("ORDER SUCCESS")
 

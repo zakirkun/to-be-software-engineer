@@ -12,6 +12,7 @@ type TransactionRepository interface {
 
 type TransactionServices interface {
 	Order(request types.RequestOrder) (*types.ResponseOrder, error)
+	HandleSentEmail(data []byte) error
 	//UpdateProfile() (*types.ResponseListCategory, error)
 }
 
