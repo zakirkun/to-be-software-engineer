@@ -28,4 +28,6 @@ type CategoryController interface {
 	Get(ctx echo.Context) error
 	Update(ctx echo.Context) error
 	Delete(ctx echo.Context) error
+	GetByCategory(ctx echo.Context) error
+	Pagination(ctx echo.Context) error
 }

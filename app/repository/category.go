@@ -30,7 +30,7 @@ func (c categoryRepository) GetAll() (*[]models.Category, error) {
 	}
 
 	var data []models.Category
-	if err := db.Debug().Model(&models.Category{}).Find(&data).Error; err != nil {
+	if err := db.Preload("Products").Debug().Model(&models.Category{}).Find(&data).Error; err != nil {
 		return nil, err
 	}
 

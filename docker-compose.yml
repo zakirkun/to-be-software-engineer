@@ -17,15 +17,16 @@ services:
     networks:
     - infrastructure
   db:
-    image: mysql:latest
-    container_name: mysql
-    hostname: mysql
+    image: mysql:8.0.38
+    container_name: db
+    restart: always
     environment:
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: toko_online
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+      TZ: "Asia/Jakarta"
     ports:
       - "3306:3306"
     volumes:
@@ -49,6 +50,16 @@ services:
       - cache:/data
     networks:
       - infrastructure
+      
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
       
 volumes:
   mysql_data:

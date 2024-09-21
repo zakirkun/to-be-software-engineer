@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS  `transaction` (
   `id_customer` int,
   `qty` int,
   `amount` float,
+  `status` int
   `created_at` timestamp,
   `updated_at` datetime
 );
@@ -80,7 +81,7 @@ VALUES
 
 ALTER TABLE `category_product` ADD FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
 
-ALTER TABLE `category_product` ADD FOREIGN KEY (`product_category_id`) REFERENCES `product` (`category_id`);
+ALTER TABLE `category_product` ADD FOREIGN KEY (`product_category_id`) REFERENCES `product` (`id`);
 
 ALTER TABLE `transaction` ADD FOREIGN KEY (`id_product`) REFERENCES `product` (`id`);
 

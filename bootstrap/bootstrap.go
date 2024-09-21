@@ -5,21 +5,35 @@ import (
 	"log"
 	"os"
 
-	"teukufuad/e-commerce/pkg/cache"
-	"teukufuad/e-commerce/pkg/database"
-	"teukufuad/e-commerce/pkg/server"
+	"imzakir.dev/e-commerce/pkg/cache"
+	"imzakir.dev/e-commerce/pkg/database"
+	"imzakir.dev/e-commerce/pkg/rabbitmq"
+	"imzakir.dev/e-commerce/pkg/server"
 )
 
 type Infrastructure interface {
 	Database()
 	Cache()
+	MessagesBroker()
 	WebServer()
 }
 
 type infrastructureContext struct {
 	database database.DBModel
 	cache    cache.Cache
+	rabbitmq rabbitmq.RabbitMQ
 	server   server.ServerContext
+}
+
+// MessagesBroker implements Infrastructure.
+func (i infrastructureContext) MessagesBroker() {
+	_, err := i.rabbitmq.Open()
+	if err != nil {
+		log.Fatalf("Failed Connect RabbitMq: %v", err)
+		os.Exit(1)
+	}
+
+	rabbitmq.RMQ = &i.rabbitmq
 }
 
 // Cache implements Infrastructure.
@@ -37,11 +51,13 @@ func (i infrastructureContext) Cache() {
 
 func NewInfrastructure(database database.DBModel,
 	cache cache.Cache,
+	rabbitmq rabbitmq.RabbitMQ,
 	server server.ServerContext,
 ) Infrastructure {
 	return infrastructureContext{
 		database: database,
 		cache:    cache,
+		rabbitmq: rabbitmq,
 		server:   server,
 	}
 }
