@@ -9,7 +9,7 @@ type Category struct {
 	CategoryName string     `gorm:"column:category_name" json:"category_name"`
 	CreatedAt    time.Time  `json:"created_at"`
 	UpdatedAt    *time.Time `json:"updated_at"`
-	Products     []Product  `gorm:"foreignKey:CategoryID"`
+	Products     []Product  `gorm:"foreignKey:CategoryID" json:"products"`
 }
 
 func (Category) TableName() string {

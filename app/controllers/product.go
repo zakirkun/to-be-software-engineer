@@ -83,7 +83,24 @@ func (p productController) Pagination(ctx echo.Context) error {
 
 // Update implements contracts.ProductController.
 func (p productController) Update(ctx echo.Context) error {
-	panic("unimplemented")
+	var reuqest types.RequestCreateProduct
+	if err := ctx.Bind(&reuqest); err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
+	}
+
+	id := ctx.Param("id")
+	if id == "" {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", errors.New("invalid id")))
+	}
+
+	_id, _ := strconv.Atoi(id)
+	svc := services.NewProductServices()
+	updated, err := svc.Update(uint(_id), reuqest)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusOK, utils.SetSuccessReponse(http.StatusOK, "SUCCESS", updated))
 }
 
 func NewProductController() contracts.ProductController {

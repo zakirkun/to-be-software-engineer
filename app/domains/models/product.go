@@ -11,7 +11,7 @@ type Product struct {
 	Price              float32   `json:"price"`
 	CreatedAt          time.Time `json:"created_at"`
 	UpdatedAt          time.Time `gorm:"autoUpdateTime" json:"updated_at"`
-	Category           Category  `gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Category           Category  `gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"json:"-"`
 }
 
 func (Product) TableName() string {
