@@ -16,8 +16,6 @@ func InitRouters() http.Handler {
 	e.Use(middleware.CORS())
 	e.Use(middleware.RequestID())
 
-	// Auth Handler
-
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"messages": "Hello World!", "request-id": c.Request().Header.Get(echo.HeaderXRequestID)})
 	})
@@ -46,7 +44,7 @@ func InitRouters() http.Handler {
 			})
 
 			order.POST("/", orderController.CreateTransaction)
-			order.GET("/:id", orderController.GetTransaction)
+			order.GET("/status/:id", orderController.GetTransaction)
 		}
 
 		auth := v1.Group("/auth")

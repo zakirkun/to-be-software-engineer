@@ -5,12 +5,24 @@ services:
     container_name: backend_app
     build:
       context: .
+      dockerfile: Dockerfile.app
     ports:
       - "9000:9000"
     restart: unless-stopped
     links:
       - db
       - cache
+      - rabbitmq
+    networks:
+    - infrastructure
+  backend_listener:
+    container_name: backend_listener
+    build:
+      context: .
+      dockerfile: Dockerfile.listener
+    restart: unless-stopped
+    links:
+      - rabbitmq
     networks:
     - infrastructure
   db:
@@ -49,7 +61,9 @@ services:
       
   rabbitmq:
     image: rabbitmq:3-management-alpine
-    container_name: 'rabbitmq'
+    container_name: rabbitmq
+    networks:
+    - infrastructure
     ports:
         - 5672:5672
         - 15672:15672
