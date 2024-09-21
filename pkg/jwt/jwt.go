@@ -55,7 +55,7 @@ func (j *JWTImpl) ValidateToken(tokenString string) (bool, error) {
 
 		return []byte(j.SignatureKey), nil
 	})
-
+	fmt.Printf("Token type: %T\n", token)
 	if err != nil {
 		return false, err
 	}

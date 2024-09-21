@@ -27,6 +27,7 @@ func InitRouters() http.Handler {
 		routeV1.CategoryRoute(v1)
 		routeV1.ProductRoute(v1)
 		routeV1.CostumerRoute(v1)
+		routeV1.TransactionRoute(v1)
 	}
 
 	return e

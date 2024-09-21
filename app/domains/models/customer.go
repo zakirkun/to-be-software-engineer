@@ -36,6 +36,7 @@ func (c Customer) ToUpdateCustomer(name string) Customer {
 
 func (c Customer) ToMapCustomer() map[string]interface{} {
 	return map[string]interface{}{
+		"id":        c.Id,
 		"username":  c.Username,
 		"email":     c.Email,
 		"full_name": c.FullName,
