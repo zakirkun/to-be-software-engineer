@@ -14,6 +14,7 @@ func InitRouters() http.Handler {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
+	e.Use(middleware.RequestID())
 
 	// Auth Handler
 
@@ -35,6 +36,25 @@ func InitRouters() http.Handler {
 	// Versioning
 	v1 := e.Group("/v1")
 	{
+
+		order := v1.Group("/order", appMiddleware.AuthMiddleware)
+		{
+			order.GET("/dummy", func(ctx echo.Context) error {
+				return ctx.JSON(http.StatusOK, echo.Map{
+					"message": "order up",
+				})
+			})
+
+			order.POST("/", orderController.CreateTransaction)
+			order.GET("/:id", orderController.GetTransaction)
+		}
+
+		auth := v1.Group("/auth")
+		{
+			auth.POST("/login", customerController.Login)
+			auth.POST("/register", customerController.Register)
+		}
+
 		category := v1.Group("/category")
 		{
 			category.POST("/save", categoryController.Insert)

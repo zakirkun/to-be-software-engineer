@@ -9,9 +9,9 @@ type Cache struct {
 
 func (c *Cache) Open() *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Addr:     c.Addr,
+		Password: c.Password, // no password set
+		DB:       0,          // use default DB
 	})
 
 	return rdb

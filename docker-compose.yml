@@ -8,40 +8,55 @@ services:
     ports:
       - "9000:9000"
     restart: unless-stopped
-    depends_on:
+    links:
       - db
       - cache
     networks:
-      - infrastructure
+    - infrastructure
   db:
-    image: mysql:latest
+    image: mysql:8.0.38
     container_name: db
+    restart: always
     environment:
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: toko_online
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+      TZ: "Asia/Jakarta"
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - infrastructure
+    - infrastructure
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 3
+      
   cache:
-    image: redis:6.2-alpine
-    restart: always
+    image: redis:alpine
     container_name: cache
     ports:
       - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
       - cache:/data
+    networks:
+      - infrastructure
+      
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      
 volumes:
   mysql_data:
   cache:

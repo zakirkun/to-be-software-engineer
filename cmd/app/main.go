@@ -10,6 +10,7 @@ import (
 	"imzakir.dev/e-commerce/pkg/cache"
 	"imzakir.dev/e-commerce/pkg/config"
 	"imzakir.dev/e-commerce/pkg/database"
+	"imzakir.dev/e-commerce/pkg/rabbitmq"
 	"imzakir.dev/e-commerce/pkg/server"
 	"imzakir.dev/e-commerce/router"
 )
@@ -24,9 +25,10 @@ func init() {
 func main() {
 	setConfig()
 
-	infra := bootstrap.NewInfrastructure(SetDatabase(), SetCache(), SetWebServer())
+	infra := bootstrap.NewInfrastructure(SetDatabase(), SetCache(), SetRabbitMq(), SetWebServer())
 	infra.Database()
 	infra.Cache()
+	infra.MessagesBroker()
 	infra.WebServer()
 }
 
@@ -67,5 +69,11 @@ func SetWebServer() server.ServerContext {
 		Handler:      router.InitRouters(),
 		ReadTimeout:  time.Duration(config.GetInt("server.http_timeout")),
 		WriteTimeout: time.Duration(config.GetInt("server.http_timeout")),
+	}
+}
+
+func SetRabbitMq() rabbitmq.RabbitMQ {
+	return rabbitmq.RabbitMQ{
+		Address: config.GetString("message_broker.rabbimq_url"),
 	}
 }

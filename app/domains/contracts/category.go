@@ -2,6 +2,7 @@ package contracts
 
 import (
 	"github.com/labstack/echo"
+	"github.com/morkid/paginate"
 	"imzakir.dev/e-commerce/app/domains/models"
 	"imzakir.dev/e-commerce/app/domains/types"
 )

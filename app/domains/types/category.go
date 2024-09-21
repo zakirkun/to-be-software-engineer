@@ -13,3 +13,11 @@ type ResponseCreateCategory struct {
 type ResponseListCategory struct {
 	Category *[]models.Category `json:"category"`
 }
+
+type RequestUpdateCategory struct {
+	Name string `json:"category_name"`
+}
+
+type ResponseUpdateCategory struct {
+	Category *models.Category `json:"category"`
+}
