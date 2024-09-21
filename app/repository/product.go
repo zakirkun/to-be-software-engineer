@@ -69,6 +69,21 @@ func (c productRepository) DeleteById (id int) (*models.Product,error)  {
 	return &data, nil
 }
 
+func (c productRepository) Update(id int, data models.Product) (*models.Product, error) {
+	db, err := database.DB.OpenDB()
+
+	if  err != nil {
+		return nil, *err 
+	}
+	
+	if err := db.Debug().Model(&models.Product{}).Where("id = ?").Updates(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+
+}
+
 func NewProductRepository() contracts.ProductRepository {
 	return productRepository{}
 }

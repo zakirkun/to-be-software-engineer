@@ -3,10 +3,10 @@ package repository
 import (
 	"log"
 
-		"imzakir.dev/e-commerce/app/domains/contracts"
-		"imzakir.dev/e-commerce/app/domains/models"
-		"imzakir.dev/e-commerce/pkg/database"
-	)
+	"imzakir.dev/e-commerce/app/domains/contracts"
+	"imzakir.dev/e-commerce/app/domains/models"
+	"imzakir.dev/e-commerce/pkg/database"
+)
 
 type categoryRepository struct{}
 

@@ -83,6 +83,25 @@ func (c productController) Delete(ctx echo.Context) error  {
 	
 }
 
+func (c productController) Edit(ctx echo.Context) error{
+	var request types.RequestCreateProduct
+	paramId := ctx.Param("id")
+	id, err := strconv.Atoi(paramId)
+
+	if err := ctx.Bind(&request); err != nil {
+		return ctx.JSON(http.StatusBadRequest, utils.SetErrorResponse(http.StatusBadRequest, "ERROR_VALIDATION", err))
+	}
+
+	svc := services.NewProductServices()
+	data, err := svc.Update(id,request)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, utils.SetErrorResponse(http.StatusInternalServerError, "INTERNAL_ERROR", err))
+	}
+
+	return ctx.JSON(http.StatusCreated, utils.SetSuccessReponse(http.StatusCreated, "SUCCESS", data))
+}
+
+
 func NewProductController() contracts.ProductController {
 	return productController{}
 }

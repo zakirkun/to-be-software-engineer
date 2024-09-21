@@ -74,3 +74,25 @@ func (c productServices) DeleteId(id int) (*types.ResponseCreateProduct, error) 
 		Product: data,
 	}, nil
 }
+
+
+func (c productServices) Update(id int, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error) {
+	repo := repository.NewProductRepository()
+	data, err := repo.Update(id, models.Product{
+		ProductName: request.NameProduct,
+		ProductImage: request.NameImage,
+		ProductDescription: request.NameProduction,
+		Price: request.NamePrice,
+		CategoryId: request.NameCategoryId,
+
+	})
+
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponseCreateProduct{
+		Product: data,
+	}, nil
+}
