@@ -24,7 +24,7 @@ day_expired = 60
 signature_key = "SuperShy!"
 
 [message_broker]
-rabbimq_url=""
+rabbimq_url="amqp://guest:guest@localhost:5672/"
 
 [cache]
 cache_addr = "localhost:6379"

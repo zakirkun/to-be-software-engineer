@@ -2,6 +2,7 @@ package contracts
 
 import (
 	"github.com/labstack/echo"
+	"github.com/morkid/paginate"
 	"imzakir.dev/e-commerce/app/domains/models"
 	"imzakir.dev/e-commerce/app/domains/types"
 )
@@ -20,6 +21,7 @@ type ProductServices interface {
 	GetDetail(productId int) (*models.Product, error)
 	Update(productId int, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error)
 	Delete(productId int) (bool, error)
+	Pagination(ctx echo.Context) (*paginate.Page, error)
 }
 
 type ProductController interface {
@@ -28,4 +30,5 @@ type ProductController interface {
 	GetDetail(ctx echo.Context) error
 	Update(ctx echo.Context) error
 	Delete(ctx echo.Context) error
+	Pagination(ctx echo.Context) error
 }

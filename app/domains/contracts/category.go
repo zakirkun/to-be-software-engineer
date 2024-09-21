@@ -2,6 +2,7 @@ package contracts
 
 import (
 	"github.com/labstack/echo"
+	"github.com/morkid/paginate"
 	"imzakir.dev/e-commerce/app/domains/models"
 	"imzakir.dev/e-commerce/app/domains/types"
 )
@@ -12,6 +13,7 @@ type CategoryRepository interface {
 	GetDetail(id int) (*models.Category, error)
 	Update(data models.Category) (*models.Category, error)
 	Delete(data models.Category) (bool, error)
+	GetByCategory(cat_id uint) (*models.Category, error)
 }
 
 type CategoryServices interface {
@@ -20,6 +22,8 @@ type CategoryServices interface {
 	GetDetail(id int) (*types.ResponseGetDetailCategory, error)
 	Update(id int, request types.RequestCreateCategory) (*types.ResponseCreateCategory, error)
 	Delete(id int) (bool, error)
+	GetByCategory(cat_id uint) (*types.ResponseCreateCategory, error)
+	Pagination(ctx echo.Context) (*paginate.Page, error)
 }
 
 type CategoryController interface {
@@ -28,4 +32,6 @@ type CategoryController interface {
 	GetDetail(ctx echo.Context) error
 	Update(ctx echo.Context) error
 	Delete(ctx echo.Context) error
+	GetByCategory(ctx echo.Context) error
+	Pagination(ctx echo.Context) error
 }

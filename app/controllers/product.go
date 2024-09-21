@@ -13,6 +13,11 @@ import (
 
 type productController struct{}
 
+// Pagination implements contracts.ProductController.
+func (p productController) Pagination(ctx echo.Context) error {
+	panic("unimplemented")
+}
+
 func (p productController) Delete(ctx echo.Context) error {
 	paramId := ctx.Param("id")
 	id, err := strconv.Atoi(paramId)
