@@ -1,15 +1,14 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo"
-	"imzakir.dev/e-commerce/app/domains/contracts"
-	"imzakir.dev/e-commerce/app/domains/types"
-	"imzakir.dev/e-commerce/app/services"
-	"imzakir.dev/e-commerce/utils"
+	"teukufuad/e-commerce/app/domains/contracts"
+	"teukufuad/e-commerce/app/domains/types"
+	"teukufuad/e-commerce/app/services"
+	"teukufuad/e-commerce/utils"
 )
 
 type categoryController struct{}

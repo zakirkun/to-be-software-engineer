@@ -8,7 +8,7 @@ cache_purged = 60
 
 [database]
 db_driver = "mysql"
-db_host = "localhost"
+db_host = "db"
 db_port = "3306"
 db_name = "toko_online"
 db_username = "user"
@@ -16,7 +16,7 @@ db_password ="password"
 
 [pool]
 conn_idle = 10
-conn_max = 20
+conn_max = 200
 conn_lifetime = 60
 
 [jwt]
@@ -27,5 +27,5 @@ signature_key = "SuperShy!"
 rabbimq_url=""
 
 [cache]
-cache_addr = "localhost:6379"
+cache_addr = "cache:6379"
 cache_password = ""

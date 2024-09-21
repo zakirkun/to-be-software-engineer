@@ -1,31 +1,53 @@
 package services
 
 import (
+	"context"
 	"errors"
-	"imzakir.dev/e-commerce/app/domains/contracts"
-	"imzakir.dev/e-commerce/app/domains/models"
-	"imzakir.dev/e-commerce/app/domains/types"
-	"imzakir.dev/e-commerce/app/repository"
-	"imzakir.dev/e-commerce/pkg/cache"
-	"imzakir.dev/e-commerce/utils"
+	"fmt"
+	"github.com/redis/go-redis/v9"
+	"teukufuad/e-commerce/app/domains/contracts"
+	"teukufuad/e-commerce/app/domains/models"
+	"teukufuad/e-commerce/app/domains/types"
+	"teukufuad/e-commerce/app/repository"
+	"teukufuad/e-commerce/pkg/cache"
+	"teukufuad/e-commerce/utils"
+	"time"
 )
 
 type categoryServices struct{}
 
 func (c categoryServices) Get(categoryId int) (*types.ResponseCategory, error) {
 	repo := repository.NewCategoryRepository()
-	data, err := repo.Get(categoryId)
-	if err != nil {
-		return nil, err
+
+	getKey, err := cache.CACHE.Get(context.Background(), fmt.Sprintf("category:%v", categoryId)).Result()
+
+	if err == redis.Nil {
+		getCategory, err := repo.Get(categoryId)
+		if err != nil {
+			return nil, err
+		}
+
+		if getCategory.Id == 0 {
+			return nil, errors.New("record not found")
+		}
+
+		toJson := utils.StructToJson(&getCategory)
+
+		cache.CACHE.Set(context.Background(), fmt.Sprintf("category:%v", categoryId), toJson, time.Duration(time.Minute*30))
+		return &types.ResponseCategory{
+			Category: getCategory,
+		}, nil
 	}
 
-	if data.Id == 0 {
-		return nil, errors.New("category not found")
+	var parse models.Category
+	if ok := utils.JsonToSruct([]byte(getKey), &parse); !ok {
+		return nil, errors.New("internal server error")
 	}
 
 	return &types.ResponseCategory{
-		Category: data,
+		Category: &parse,
 	}, nil
+
 }
 
 // GetAll implements contracts.CategoryServices.

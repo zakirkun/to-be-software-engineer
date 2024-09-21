@@ -1,4 +1,4 @@
-module imzakir.dev/e-commerce
+module teukufuad/e-commerce
 
 go 1.20
 
@@ -9,6 +9,7 @@ require (
 	github.com/labstack/gommon v0.4.2
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/spf13/viper v1.19.0
+	golang.org/x/crypto v0.22.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.11
@@ -43,7 +44,6 @@ require (
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
-	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect

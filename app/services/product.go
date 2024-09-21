@@ -2,10 +2,10 @@ package services
 
 import (
 	"errors"
-	"imzakir.dev/e-commerce/app/domains/contracts"
-	"imzakir.dev/e-commerce/app/domains/models"
-	"imzakir.dev/e-commerce/app/domains/types"
-	"imzakir.dev/e-commerce/app/repository"
+	"teukufuad/e-commerce/app/domains/contracts"
+	"teukufuad/e-commerce/app/domains/models"
+	"teukufuad/e-commerce/app/domains/types"
+	"teukufuad/e-commerce/app/repository"
 )
 
 type ProductService struct {

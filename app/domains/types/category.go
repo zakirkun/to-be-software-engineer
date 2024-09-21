@@ -1,6 +1,6 @@
 package types
 
-import "imzakir.dev/e-commerce/app/domains/models"
+import "teukufuad/e-commerce/app/domains/models"
 
 type RequestCreateCategory struct {
 	Name string `json:"category_name"`

@@ -2,8 +2,8 @@ package contracts
 
 import (
 	"github.com/labstack/echo"
-	"imzakir.dev/e-commerce/app/domains/models"
-	"imzakir.dev/e-commerce/app/domains/types"
+	"teukufuad/e-commerce/app/domains/models"
+	"teukufuad/e-commerce/app/domains/types"
 )
 
 type CategoryRepository interface {

@@ -1,8 +1,8 @@
 package router
 
 import (
-	routeV1 "imzakir.dev/e-commerce/router/v1"
 	"net/http"
+	routeV1 "teukufuad/e-commerce/router/v1"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"

@@ -1,6 +1,6 @@
 package utils
 
-import "imzakir.dev/e-commerce/app/domains/types"
+import "teukufuad/e-commerce/app/domains/types"
 
 func SetSuccessReponse(code int, message string, data any) types.SuccessResponse {
 	return types.SuccessResponse{

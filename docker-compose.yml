@@ -8,6 +8,9 @@ services:
     ports:
       - "9000:9000"
     restart: unless-stopped
+    links:
+      - db
+      - cache
     depends_on:
       db:
         condition: service_healthy

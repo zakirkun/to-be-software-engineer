@@ -1,6 +1,6 @@
 package types
 
-import "imzakir.dev/e-commerce/app/domains/models"
+import "teukufuad/e-commerce/app/domains/models"
 
 type RequestSignUp struct {
 	Username string `json:"username"`

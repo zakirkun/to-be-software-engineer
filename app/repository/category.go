@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"imzakir.dev/e-commerce/app/domains/contracts"
-	"imzakir.dev/e-commerce/app/domains/models"
-	"imzakir.dev/e-commerce/pkg/database"
+	"teukufuad/e-commerce/app/domains/contracts"
+	"teukufuad/e-commerce/app/domains/models"
+	"teukufuad/e-commerce/pkg/database"
 )
 
 type categoryRepository struct{}

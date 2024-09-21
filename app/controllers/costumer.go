@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"github.com/labstack/echo"
-	"imzakir.dev/e-commerce/app/domains/contracts"
-	"imzakir.dev/e-commerce/app/domains/types"
-	"imzakir.dev/e-commerce/app/services"
-	"imzakir.dev/e-commerce/utils"
 	"net/http"
+	"teukufuad/e-commerce/app/domains/contracts"
+	"teukufuad/e-commerce/app/domains/types"
+	"teukufuad/e-commerce/app/services"
+	"teukufuad/e-commerce/utils"
 )
 
 type CostumerController struct {
