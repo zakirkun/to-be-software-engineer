@@ -32,6 +32,7 @@ CREATE TABLE `transaction` (
   `id_customer` int,
   `qty` int,
   `amount` float,
+  `status` int
   `created_at` timestamp,
   `updated_at` datetime
 );

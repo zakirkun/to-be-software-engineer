@@ -36,7 +36,7 @@ func AuthMiddleware(h echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		parse, _ := _jwt.ParseToken(tokenString)
-		ctx.Set("user", parse)
+		ctx.Set("username", parse["username"])
 
 		return h(ctx)
 	}

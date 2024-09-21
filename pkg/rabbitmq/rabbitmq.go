@@ -65,7 +65,7 @@ func (r RabbitMQ) Publish(queueName string, body interface{}) error {
 }
 
 // Listener implements IRabbitMQ.
-func (r RabbitMQ) Listener(queueName string, cb ...func(payload interface{}) error) {
+func (r RabbitMQ) Listener(queueName string, cb ...func(payload []byte) error) {
 	conn, err := amqp.Dial(r.Address)
 	failOnError(err, "Failed open connection")
 	defer conn.Close()
@@ -103,7 +103,10 @@ func (r RabbitMQ) Listener(queueName string, cb ...func(payload interface{}) err
 	go func() {
 		for d := range msgs {
 			for _, f := range cb {
-				f(d.Body)
+				err := f(d.Body)
+				if err != nil {
+					log.Printf("Callback RabbitMQ Failed: %v", err)
+				}
 			}
 		}
 	}()
@@ -127,7 +130,7 @@ type IRabbitMQ interface {
 	Open() (*amqp.Connection, error)
 	Listener(
 		queueName string,
-		cb ...func(payload interface{}) error,
+		cb ...func(payload []byte) error,
 	)
 	Publish(queueName string, body interface{}) error
 }

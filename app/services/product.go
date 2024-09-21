@@ -70,7 +70,7 @@ func (p productServices) GetAll() (*types.ResponsegetAllProduct, error) {
 
 // GetByID implements contracts.ProductServices.
 func (p productServices) GetByID(id uint) (*types.ResponsegetAllProduct, error) {
-	var where map[string]interface{}
+	where := make(map[string]interface{})
 	where["id"] = id
 
 	getProduct, err := repository.NewProductRepository().FindBy(where)

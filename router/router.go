@@ -31,6 +31,7 @@ func InitRouters() http.Handler {
 	categoryController := controllers.NewCategoryController()
 	productController := controllers.NewProductController()
 	customerController := controllers.NewCustomerController()
+	orderController := controllers.NewOrderController()
 
 	// Versioning
 	v1 := e.Group("/v1")
@@ -43,6 +44,9 @@ func InitRouters() http.Handler {
 					"message": "order up",
 				})
 			})
+
+			order.POST("/", orderController.CreateTransaction)
+			order.GET("/:id", orderController.GetTransaction)
 		}
 
 		auth := v1.Group("/auth")
