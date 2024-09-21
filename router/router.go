@@ -29,6 +29,7 @@ func InitRouters() http.Handler {
 	// controller
 	categoryController := controllers.NewCategoryController()
 	productController := controllers.NewProductController()
+	customerController := controllers.NewCustomerController()
 
 	// Versioning
 	v1 := e.Group("/v1")
@@ -49,6 +50,12 @@ func InitRouters() http.Handler {
 			category.PUT("/:id", productController.Update)
 			product.DELETE("/:id", productController.Delete)
 		}
+		customer := v1.Group("/auth")
+		{
+			customer.POST("/register", customerController.Register)
+			customer.POST("/login", customerController.Login)
+		}
+
 	}
 
 	return e
