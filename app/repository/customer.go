@@ -22,6 +22,22 @@ func (c customerRepository) GetByUsername(username string) (*models.Customer, er
 	return &customer, nil
 }
 
+// GetWhere implements contracts.CustomerRepository.
+func (c customerRepository) GetWhere(where map[string]interface{}) (*models.Customer, error) {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return nil, *err
+	}
+
+	var data models.Customer
+	if err := db.Debug().Model(&models.Customer{}).
+		Where(where).Find(&data).Error; err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
 func (c customerRepository) Insert(data models.Customer) (*models.Customer, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {

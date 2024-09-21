@@ -9,6 +9,7 @@ import (
 type CustomerRepository interface {
 	Insert(data models.Customer) (*models.Customer, error)
 	GetByUsername(username string) (*models.Customer, error)
+	GetWhere(where map[string]interface{}) (*models.Customer, error)
 }
 
 type CustomerServices interface {

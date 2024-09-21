@@ -30,6 +30,7 @@ func InitRouters() http.Handler {
 	categoryController := controllers.NewCategoryController()
 	productController := controllers.NewProductController()
 	customerController := controllers.NewCustomerController()
+	orderController := controllers.NewOrderController()
 
 	// Versioning
 	v1 := e.Group("/v1")
@@ -59,6 +60,17 @@ func InitRouters() http.Handler {
 			customer.POST("/login", customerController.Login)
 		}
 
+		order := v1.Group("/order", appMiddleware.AuthMiddleware)
+		{
+			order.GET("/dummy", func(ctx echo.Context) error {
+				return ctx.JSON(http.StatusOK, echo.Map{
+					"message": "order up",
+				})
+			})
+
+			order.POST("/", orderController.CreateTransaction)
+			order.GET("/status/:id", orderController.GetTransaction)
+		}
 	}
 
 	return e

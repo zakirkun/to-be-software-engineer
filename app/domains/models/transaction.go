@@ -4,8 +4,8 @@ import "time"
 
 type Transaction struct {
 	ID         uint `gorm:"primaryKey;autoIncrement"`
-	ProductID  uint `gorm:"index"`
-	CustomerID uint `gorm:"index"`
+	ProductID  uint `gorm:"index;column:id_product"`
+	CustomerID uint `gorm:"index;column:id_customer"`
 	Qty        int
 	Amount     float32
 	CreatedAt  time.Time
