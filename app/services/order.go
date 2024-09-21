@@ -18,6 +18,7 @@ type orderServices struct{}
 
 // HandleSentEmail implements contracts.OrderServices.
 func (o orderServices) HandleSentEmail(data []byte) error {
+
 	// define struct body
 	body := make(map[string]interface{})
 
@@ -68,8 +69,7 @@ func (o orderServices) CreateTransaction(request types.RequestCreateTransaction)
 		payload["to"] = getCust.Email
 		payload["body"] = fmt.Sprintf("You order %d, was created", data.ID)
 
-		_body, _ := json.Marshal(&payload)
-		if err := rabbitmq.RMQ.Publish("email_services", string(_body)); err != nil {
+		if err := rabbitmq.RMQ.Publish("email_services", payload); err != nil {
 			log.Printf("MESSAGES_BROKER_ERROR: %v", err)
 		}
 	}
