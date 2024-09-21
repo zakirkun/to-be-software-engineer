@@ -8,6 +8,7 @@ import (
 
 	mail "github.com/xhit/go-simple-mail/v2"
 	"golang.org/x/crypto/bcrypt"
+	"imzakir.dev/e-commerce/pkg/config"
 )
 
 func StructToJson(src any) string {
@@ -40,16 +41,16 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func SendEmail(to, htmlBody string) error {
+func SendEmail(to, htmlBody, subject string) error {
 
 	// sending email
 	smtp := mail.NewSMTPClient()
 
 	// setup smtp
-	smtp.Host = "smtp.mailersend.net"
-	smtp.Port = 587
-	smtp.Username = "MS_83WUWh@mail.zkr.my.id"
-	smtp.Password = "qelJeHORJasdWO0j"
+	smtp.Host = config.GetString("smtp.host")
+	smtp.Port = config.GetInt("smtp.port")
+	smtp.Username = config.GetString("smtp.username")
+	smtp.Password = config.GetString("smtp.password")
 	smtp.Encryption = mail.EncryptionSTARTTLS
 
 	// Variable to keep alive connection
@@ -70,9 +71,9 @@ func SendEmail(to, htmlBody string) error {
 
 	// New email simple html with inline and CC
 	email := mail.NewMSG()
-	email.SetFrom(fmt.Sprintf("From %v <%v>", "TOKO ONLINE", "MS_83WUWh@mail.zkr.my.id")).
+	email.SetFrom(fmt.Sprintf("From %v <%v>", config.GetString("server.app_name"), config.GetString("smtp.username"))).
 		AddTo(to).
-		SetSubject("ORDER SUCCESS")
+		SetSubject(subject)
 
 	email.SetBody(mail.TextHTML, htmlBody)
 

@@ -9,7 +9,7 @@ import (
 type orderRepository struct{}
 
 // Create implements contracts.OrderRepository.
-func (o orderRepository) Create(data models.Transaction) error {
+func (o orderRepository) Create(data *models.Transaction) error {
 	db, err := database.DB.OpenDB()
 	if err != nil {
 		return *err

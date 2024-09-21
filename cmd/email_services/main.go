@@ -20,19 +20,8 @@ func init() {
 func main() {
 	setConfig()
 
-	i := SetRabbitMq()
-	_, err := i.Open()
-	if err != nil {
-		log.Fatalf("Failed Connect RabbitMq: %v", err)
-		os.Exit(1)
-	}
-
-	// Enable Listener
-	i.Listener("email_services", func(payload []byte) error {
-		log.Printf("Recive Messages: %v", string(payload))
-
-		return nil
-	}, services.NewOrderServices().HandleSentEmail)
+	bundle := NewBudle(SetRabbitMq())
+	bundle.EventEmail()
 }
 
 func setConfig() {
@@ -47,4 +36,28 @@ func SetRabbitMq() rabbitmq.RabbitMQ {
 	return rabbitmq.RabbitMQ{
 		Address: config.GetString("message_broker.rabbimq_url"),
 	}
+}
+
+type iBundleListener struct {
+	rabbitmq rabbitmq.RabbitMQ
+}
+
+// EventEmail implements IBudleInterface.
+func (i iBundleListener) EventEmail() {
+	_, err := i.rabbitmq.Open()
+	if err != nil {
+		log.Fatalf("Failed Connect RabbitMq: %v", err)
+		os.Exit(1)
+	}
+
+	// Enable Listener
+	i.rabbitmq.Listener("email_services", services.NewOrderServices().HandleSentEmail)
+}
+
+type IBudleInterface interface {
+	EventEmail()
+}
+
+func NewBudle(rabbitmq rabbitmq.RabbitMQ) IBudleInterface {
+	return iBundleListener{rabbitmq: rabbitmq}
 }

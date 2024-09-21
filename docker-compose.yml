@@ -15,11 +15,22 @@ services:
       - rabbitmq
     networks:
     - infrastructure
-  backend_listener:
-    container_name: backend_listener
+  listener_payment:
+    container_name: listener_payment
     build:
       context: .
-      dockerfile: Dockerfile.listener
+      dockerfile: Dockerfile.payment
+    restart: unless-stopped
+    links:
+      - db
+      - rabbitmq
+    networks:
+    - infrastructure
+  listener_email:
+    container_name: listener_email
+    build:
+      context: .
+      dockerfile: Dockerfile.email
     restart: unless-stopped
     links:
       - rabbitmq
