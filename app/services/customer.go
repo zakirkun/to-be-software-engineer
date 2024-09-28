@@ -2,13 +2,16 @@ package services
 
 import (
 	"errors"
+	"fmt"
 
+	"github.com/labstack/gommon/log"
 	"imzakir.dev/e-commerce/app/domains/contracts"
 	"imzakir.dev/e-commerce/app/domains/models"
 	"imzakir.dev/e-commerce/app/domains/types"
 	"imzakir.dev/e-commerce/app/repository"
 	"imzakir.dev/e-commerce/pkg/config"
 	"imzakir.dev/e-commerce/pkg/jwt"
+	"imzakir.dev/e-commerce/pkg/rabbitmq"
 	"imzakir.dev/e-commerce/utils"
 )
 
@@ -69,6 +72,22 @@ func (c customerServices) Register(request types.RequestRegisterCustomer) (*type
 	if err := repo.Create(data); err != nil {
 		return nil, err
 	}
+
+	var sendWelcomeLetter = func() {
+		sentEmailParam := make(map[string]interface{})
+		sentEmailParam["To"] = data.Email
+		sentEmailParam["Subject"] = fmt.Sprintf("Welcome To %v", config.GetString("server.app_name"))
+		sentEmailParam["Body"] = "Thanks for registration"
+		log.Info(sentEmailParam)
+
+		if err := rabbitmq.RMQ.Publish("email_services", sentEmailParam); err != nil {
+			log.Printf("EMAIL_SERVICES_MESSAGES_BROKER_ERROR: %v", err)
+		}
+
+		log.Info("Welcome letter success send")
+	}
+
+	go sendWelcomeLetter()
 
 	return &types.ResponseRegisterCustomer{
 		Customer: data,

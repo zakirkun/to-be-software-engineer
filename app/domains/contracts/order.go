@@ -15,6 +15,7 @@ type OrderServices interface {
 	CreateTransaction(request types.RequestCreateTransaction) (*types.ResponseGetTransaction, error)
 	GetTransaction(id uint) (*types.ResponseGetTransaction, error)
 	HandleSentEmail(data []byte) error
+	HandleLogging(data []byte) error
 }
 
 type OrderController interface {

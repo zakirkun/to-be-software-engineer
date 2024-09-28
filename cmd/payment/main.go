@@ -8,6 +8,7 @@ import (
 	"imzakir.dev/e-commerce/app/services"
 	"imzakir.dev/e-commerce/pkg/config"
 	"imzakir.dev/e-commerce/pkg/database"
+	"imzakir.dev/e-commerce/pkg/logstash"
 	"imzakir.dev/e-commerce/pkg/rabbitmq"
 )
 
@@ -21,7 +22,8 @@ func init() {
 func main() {
 	setConfig()
 
-	bundle := NewBudle(SetDatabase(), SetRabbitMq())
+	bundle := NewBudle(SetLogstash(), SetDatabase(), SetRabbitMq())
+	bundle.Logstash()
 	bundle.Database()
 	bundle.EventPayment()
 }
@@ -37,6 +39,13 @@ func setConfig() {
 func SetRabbitMq() rabbitmq.RabbitMQ {
 	return rabbitmq.RabbitMQ{
 		Address: config.GetString("message_broker.rabbimq_url"),
+	}
+}
+
+func SetLogstash() logstash.LogstashModel {
+	return logstash.LogstashModel{
+		Network: config.GetString("logstash.network"),
+		Addr:    config.GetString("logstash.addr"),
 	}
 }
 
@@ -56,8 +65,20 @@ func SetDatabase() database.DBModel {
 }
 
 type iBundleListener struct {
+	logstash logstash.LogstashModel
 	database database.DBModel
 	rabbitmq rabbitmq.RabbitMQ
+}
+
+// Logstash implements IBudleInterface.
+func (i iBundleListener) Logstash() {
+	_, err := i.logstash.Open()
+	if err != nil {
+		log.Fatalf("Failed Connect Logstash: %v", err)
+		os.Exit(1)
+	}
+
+	logstash.LOGSTASH = &i.logstash
 }
 
 // Database implements IBudleInterface.
@@ -81,15 +102,20 @@ func (i iBundleListener) EventPayment() {
 	rabbitmq.RMQ = &i.rabbitmq
 
 	// Enable Listener
-	i.rabbitmq.Listener("payment_services", services.NewPaymentServices().HandlePayment)
+	i.rabbitmq.Listener("payment_services", services.NewPaymentServices().HandlePayment, services.NewPaymentServices().HandleLogging)
 
 }
 
 type IBudleInterface interface {
+	Logstash()
 	Database()
 	EventPayment()
 }
 
-func NewBudle(database database.DBModel, rabbitmq rabbitmq.RabbitMQ) IBudleInterface {
-	return iBundleListener{database: database, rabbitmq: rabbitmq}
+func NewBudle(logstash logstash.LogstashModel, database database.DBModel, rabbitmq rabbitmq.RabbitMQ) IBudleInterface {
+	return iBundleListener{
+		logstash: logstash,
+		database: database,
+		rabbitmq: rabbitmq,
+	}
 }

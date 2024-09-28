@@ -15,6 +15,8 @@ func InitRouters() http.Handler {
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
 	e.Use(middleware.RequestID())
+	// Enable Logging Middleware
+	e.Use(appMiddleware.Logging)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{"messages": "Hello World!", "request-id": c.Request().Header.Get(echo.HeaderXRequestID)})

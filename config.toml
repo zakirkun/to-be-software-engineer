@@ -39,3 +39,8 @@ host="smtp.mailersend.net"
 port=587
 username="MS_BiRD7P@trial-351ndgw215rgzqx8.mlsender.net"
 password="YLkGFhT4XKhPExD7"
+
+[logstash]
+network = "tcp"
+addr = "127.0.0.1:5000"
+app_name = "toko_online"

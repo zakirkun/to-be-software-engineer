@@ -13,10 +13,31 @@ import (
 	"imzakir.dev/e-commerce/app/domains/types"
 	"imzakir.dev/e-commerce/app/repository"
 	"imzakir.dev/e-commerce/pkg/config"
+	"imzakir.dev/e-commerce/pkg/logstash"
 	"imzakir.dev/e-commerce/pkg/rabbitmq"
 )
 
 type paymentServices struct{}
+
+// HandleLogging implements contracts.PaymentServices.
+func (p paymentServices) HandleLogging(data []byte) error {
+
+	// Init logstash
+	logging := logstash.LogPayload{}
+
+	var body types.PaymentParameter
+
+	err := json.Unmarshal(data, &body)
+	if err != nil {
+		return err
+	}
+
+	if err := logging.SetData(body).SetIndex("payment_services").SetAppName("payment_delivery_services").WriteCaller("INFO", "Payment delivery services recive payload"); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 var s snap.Client
 

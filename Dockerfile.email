@@ -16,7 +16,7 @@ RUN go mod download
 COPY . .
 
 # Step 6: Build the Go app
-RUN go build -o main ./cmd/listener/
+RUN go build -o main ./cmd/email_services/
 
 # Step 7: Use a minimal base image for running the app
 FROM alpine:latest
