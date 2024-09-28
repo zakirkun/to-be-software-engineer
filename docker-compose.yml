@@ -5,12 +5,35 @@ services:
     container_name: backend_app
     build:
       context: .
+      dockerfile: Dockerfile.app
     ports:
       - "9000:9000"
     restart: unless-stopped
     links:
       - db
       - cache
+      - rabbitmq
+    networks:
+    - infrastructure
+  listener_payment:
+    container_name: listener_payment
+    build:
+      context: .
+      dockerfile: Dockerfile.payment
+    restart: unless-stopped
+    links:
+      - db
+      - rabbitmq
+    networks:
+    - infrastructure
+  listener_email:
+    container_name: listener_email
+    build:
+      context: .
+      dockerfile: Dockerfile.email
+    restart: unless-stopped
+    links:
+      - rabbitmq
     networks:
     - infrastructure
   db:
@@ -49,13 +72,49 @@ services:
       
   rabbitmq:
     image: rabbitmq:3-management-alpine
-    container_name: 'rabbitmq'
+    container_name: rabbitmq
+    networks:
+    - infrastructure
     ports:
         - 5672:5672
         - 15672:15672
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    networks:
+      - infrastructure
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.9
+    container_name: logstash
+    volumes:
+      - ./deploy/elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5000:5000"
+    networks:
+      - infrastructure
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.9
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - infrastructure
+    depends_on:
+      - elasticsearch
       
 volumes:
   mysql_data:

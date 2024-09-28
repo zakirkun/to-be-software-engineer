@@ -7,7 +7,7 @@ import (
 )
 
 type OrderRepository interface {
-	Create(data models.Transaction) error
+	Create(data *models.Transaction) error
 	GetByID(id uint) (*models.Transaction, error)
 }
 

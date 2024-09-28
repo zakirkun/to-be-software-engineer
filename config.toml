@@ -29,3 +29,13 @@ rabbimq_url="amqp://guest:guest@localhost:5672/"
 [cache]
 cache_addr = "localhost:6379"
 cache_password = ""
+
+[payment]
+mode="sandbox"
+sb_server_key="SB-Mid-server-FxnHTffLCcsFPQjMcJTcJrTb"
+
+[smtp]
+host="smtp.mailersend.net"
+port=587
+username="MS_BiRD7P@trial-351ndgw215rgzqx8.mlsender.net"
+password="YLkGFhT4XKhPExD7"

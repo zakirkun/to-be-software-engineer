@@ -3,7 +3,6 @@ package services
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"github.com/labstack/gommon/log"
 	"imzakir.dev/e-commerce/app/domains/contracts"
@@ -27,10 +26,11 @@ func (o orderServices) HandleSentEmail(data []byte) error {
 		return err
 	}
 
-	to, _ := body["to"].(string)
-	htmlBody, _ := body["body"].(string)
+	to, _ := body["To"].(string)
+	htmlBody, _ := body["Body"].(string)
+	subject, _ := body["Subject"].(string)
 
-	if err := utils.SendEmail(to, htmlBody); err != nil {
+	if err := utils.SendEmail(to, htmlBody, subject); err != nil {
 		return err
 	}
 
@@ -60,21 +60,24 @@ func (o orderServices) CreateTransaction(request types.RequestCreateTransaction)
 	}
 
 	repo := repository.NewOrderRepository()
-	if err := repo.Create(data); err != nil {
+	if err := repo.Create(&data); err != nil {
 		return nil, err
 	}
 
-	var sendEmail = func() {
-		payload := make(map[string]interface{})
-		payload["to"] = getCust.Email
-		payload["body"] = fmt.Sprintf("You order %d, was created", data.ID)
+	var sendPaymentServices = func() {
+		req := types.PaymentParameter{
+			Username:  getCust.Username,
+			ProductId: request.ProductID,
+			TrxId:     int(data.ID),
+			Amount:    int(request.Amount),
+		}
 
-		if err := rabbitmq.RMQ.Publish("email_services", payload); err != nil {
-			log.Printf("MESSAGES_BROKER_ERROR: %v", err)
+		if err := rabbitmq.RMQ.Publish("payment_services", req); err != nil {
+			log.Printf("PAYMENT_SERVICES_MESSAGES_BROKER_ERROR: %v", err)
 		}
 	}
 
-	go sendEmail()
+	go sendPaymentServices()
 
 	return &types.ResponseGetTransaction{
 		Transaction: &data,

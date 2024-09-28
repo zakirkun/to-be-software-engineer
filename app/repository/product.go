@@ -6,72 +6,78 @@ import (
 	"imzakir.dev/e-commerce/pkg/database"
 )
 
-type productRepository struct {
-}
+type productRepository struct{}
 
-func (p productRepository) Delete(data models.Product) (bool, error) {
+// Create implements contracts.ProductRepository.
+func (p productRepository) Create(data models.Product) error {
 	db, err := database.DB.OpenDB()
 	if err != nil {
-		return false, *err
+		return *err
 	}
 
-	if err := db.Delete(&data).Error; err != nil {
-		return false, err
+	if err := db.Create(&data).Error; err != nil {
+		return err
 	}
-	return true, nil
+
+	return nil
 }
 
-func (p productRepository) Update(data models.Product) (*models.Product, error) {
+// Delete implements contracts.ProductRepository.
+func (p productRepository) Delete(id uint) error {
 	db, err := database.DB.OpenDB()
 	if err != nil {
-		return nil, *err
+		return *err
 	}
 
-	if err := db.Save(&data).Error; err != nil {
-		return nil, err
+	if err := db.Where("id = ?", id).Delete(&models.Product{}).Error; err != nil {
+		return err
 	}
-	return &data, nil
+
+	return nil
 }
 
-func (p productRepository) FindById(productId int) (*models.Product, error) {
-	db, err := database.DB.OpenDB()
-	if err != nil {
-		return nil, *err
-	}
-
-	var data models.Product
-
-	if err := db.Debug().Model(&models.Product{}).Where("id = ?", productId).First(&data).Error; err != nil {
-		return nil, err
-	}
-	return &data, nil
-}
-
-func (p productRepository) FindAll() (*[]models.Product, error) {
+// FindBy implements contracts.ProductRepository.
+func (p productRepository) FindBy(where map[string]interface{}) (*[]models.Product, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {
 		return nil, *err
 	}
 
 	var data []models.Product
-
-	if err := db.Debug().Model(&models.Product{}).Find(&data).Error; err != nil {
+	if err := db.Debug().Model(&models.Product{}).Where(where).Find(&data).Error; err != nil {
 		return nil, err
 	}
+
 	return &data, nil
 }
 
-func (p productRepository) Insert(data models.Product) (*models.Product, error) {
+// GetAll implements contracts.ProductRepository.
+func (p productRepository) GetAll() (*[]models.Product, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {
 		return nil, *err
 	}
 
-	if err := db.Create(&data).Error; err != nil {
+	var data []models.Product
+	if err := db.Model(&models.Product{}).Find(&data).Error; err != nil {
 		return nil, err
 	}
 
 	return &data, nil
+}
+
+// Update implements contracts.ProductRepository.
+func (p productRepository) Update(id uint, data models.Product) error {
+	db, err := database.DB.OpenDB()
+	if err != nil {
+		return *err
+	}
+
+	if err := db.Where("id = ?", id).Updates(&data).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewProductRepository() contracts.ProductRepository {

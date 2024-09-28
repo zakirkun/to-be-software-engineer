@@ -1,18 +1,17 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
 type Product struct {
-	Id                 int        `gorm:"column:id;primaryKey" json:"-"`
-	CategoryId         int        `gorm:"column:category_id" json:"category_id"`
-	ProductName        string     `gorm:"column:product_name" json: "product_name"`
-	ProductImage       string     `gorm:"column:product_image" json: "product_image"`
-	ProductDescription string     `gorm:"column:product_description" json: "product_description"`
-	Price              float32    `gorm:"column:price" json: "price"`
-	CreatedAt          time.Time  `json:"created_at"`
-	UpdatedAt          *time.Time `json:"updated_at"`
+	ID                 uint      `gorm:"primaryKey;autoIncrement" json:"-"`
+	CategoryID         uint      `gorm:"index" json:"-"`
+	ProductName        string    `json:"product_name"`
+	ProductImage       string    `json:"product_image"`
+	ProductDescription string    `json:"product_description"`
+	Price              float32   `json:"price"`
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	Category           Category  `gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"json:"-"`
 }
 
 func (Product) TableName() string {

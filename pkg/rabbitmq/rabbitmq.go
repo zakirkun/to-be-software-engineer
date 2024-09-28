@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -59,7 +60,7 @@ func (r RabbitMQ) Publish(queueName string, body interface{}) error {
 		return err
 	}
 
-	log.Printf(" [x] Sent JSON message: %s", jsonBody)
+	log.Printf(" [x][%v] Sent JSON message: %s", queueName, jsonBody)
 
 	return nil
 }
@@ -67,8 +68,10 @@ func (r RabbitMQ) Publish(queueName string, body interface{}) error {
 // Listener implements IRabbitMQ.
 func (r RabbitMQ) Listener(queueName string, cb ...func(payload []byte) error) {
 	conn, err := amqp.Dial(r.Address)
-	failOnError(err, "Failed open connection")
+	failOnError(err, "Failed open connection to RabbitMQ")
 	defer conn.Close()
+
+	log.Printf("Connected to RabbitMQ for queue: %s", queueName)
 
 	// Create a channel
 	ch, err := conn.Channel()
@@ -84,7 +87,7 @@ func (r RabbitMQ) Listener(queueName string, cb ...func(payload []byte) error) {
 		false,     // no-wait
 		nil,       // arguments
 	)
-	failOnError(err, "Failed to declare a queue")
+	failOnError(err, fmt.Sprintf("Failed to declare queue: %s", queueName))
 
 	// Consume messages
 	msgs, err := ch.Consume(
@@ -96,22 +99,24 @@ func (r RabbitMQ) Listener(queueName string, cb ...func(payload []byte) error) {
 		false,  // no-wait
 		nil,    // args
 	)
-	failOnError(err, "Failed to register a consumer")
+	failOnError(err, fmt.Sprintf("Failed to register a consumer for queue: %s", queueName))
+
+	log.Printf("Waiting for messages on queue: %s", queueName)
 
 	forever := make(chan bool)
 
 	go func() {
 		for d := range msgs {
+			log.Printf("Received a message on queue: %s, Message: %s", queueName, d.Body)
 			for _, f := range cb {
 				err := f(d.Body)
 				if err != nil {
-					log.Printf("Callback RabbitMQ Failed: %v", err)
+					log.Printf("Callback RabbitMQ Failed for queue: %s, Error: %v", queueName, err)
 				}
 			}
 		}
 	}()
 
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 	<-forever
 }
 

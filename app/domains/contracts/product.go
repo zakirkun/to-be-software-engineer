@@ -8,26 +8,24 @@ import (
 )
 
 type ProductRepository interface {
-	Insert(data models.Product) (*models.Product, error)
-	FindAll() (*[]models.Product, error)
-	FindById(productId int) (*models.Product, error)
-	Update(data models.Product) (*models.Product, error)
-	Delete(data models.Product) (bool, error)
+	Create(data models.Product) error
+	FindBy(where map[string]interface{}) (*[]models.Product, error)
+	Update(id uint, data models.Product) error
+	Delete(id uint) error
+	GetAll() (*[]models.Product, error)
 }
-
 type ProductServices interface {
-	AddProduct(request types.RequestCreateProduct) (*types.ResponseCreateProduct, error)
-	GetAllProducts() (*[]models.Product, error)
-	GetDetail(productId int) (*models.Product, error)
-	Update(productId int, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error)
-	Delete(productId int) (bool, error)
+	Create(request types.RequestCreateProduct) (*types.ResponseCreateProduct, error)
+	Delete(id uint) error
+	GetAll() (*types.ResponsegetAllProduct, error)
+	Update(id uint, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error)
+	GetByID(id uint) (*types.ResponsegetAllProduct, error)
 	Pagination(ctx echo.Context) (*paginate.Page, error)
 }
-
 type ProductController interface {
-	Create(ctx echo.Context) error
+	Insert(ctx echo.Context) error
 	GetAll(ctx echo.Context) error
-	GetDetail(ctx echo.Context) error
+	GetByID(ctx echo.Context) error
 	Update(ctx echo.Context) error
 	Delete(ctx echo.Context) error
 	Pagination(ctx echo.Context) error

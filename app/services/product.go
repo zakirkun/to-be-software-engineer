@@ -10,11 +10,10 @@ import (
 	"imzakir.dev/e-commerce/pkg/database"
 )
 
-type productService struct {
-}
+type productServices struct{}
 
 // Pagination implements contracts.ProductServices.
-func (p productService) Pagination(ctx echo.Context) (*paginate.Page, error) {
+func (p productServices) Pagination(ctx echo.Context) (*paginate.Page, error) {
 	db, err := database.DB.OpenDB()
 	if err != nil {
 		return nil, *err
@@ -25,83 +24,86 @@ func (p productService) Pagination(ctx echo.Context) (*paginate.Page, error) {
 	page := pg.With(stmt).Request(ctx.Request()).Response(&models.Product{})
 
 	return &page, nil
+
 }
 
-func (p productService) Delete(productId int) (bool, error) {
-	repo := repository.NewProductRepository()
-	dataProduct, err := repo.FindById(productId)
-	if err != nil {
-		return false, err
-	}
+// Create implements contracts.ProductServices.
+func (p productServices) Create(request types.RequestCreateProduct) (*types.ResponseCreateProduct, error) {
 
-	data, err := repo.Delete(*dataProduct)
-
-	if err != nil {
-		return false, err
-	}
-	return data, err
-}
-
-func (p productService) Update(productId int, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error) {
-	repo := repository.NewProductRepository()
-	dataProduct, err := repo.FindById(productId)
-	if err != nil {
-		return nil, err
-	}
-
-	dataProduct.CategoryId = request.CategoryId
-	dataProduct.ProductName = request.ProductName
-	dataProduct.ProductImage = request.ProductImage
-	dataProduct.ProductDescription = request.ProductDescription
-	dataProduct.Price = request.Price
-
-	data, err := repo.Update(*dataProduct)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.ResponseCreateProduct{
-		Product: data,
-	}, nil
-}
-
-func (p productService) GetDetail(productId int) (*models.Product, error) {
-	repo := repository.NewProductRepository()
-	data, err := repo.FindById(productId)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
-}
-
-func (p productService) GetAllProducts() (*[]models.Product, error) {
-	repo := repository.NewProductRepository()
-	data, err := repo.FindAll()
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
-}
-
-func (p productService) AddProduct(request types.RequestCreateProduct) (*types.ResponseCreateProduct, error) {
-	repo := repository.NewProductRepository()
-	data, err := repo.Insert(models.Product{
-		CategoryId:         request.CategoryId,
+	data := models.Product{
+		CategoryID:         request.CategoryID,
 		ProductName:        request.ProductName,
-		ProductDescription: request.ProductDescription,
 		ProductImage:       request.ProductImage,
+		ProductDescription: request.ProductDescription,
 		Price:              request.Price,
-	})
+	}
 
-	if err != nil {
+	if err := repository.NewProductRepository().Create(data); err != nil {
 		return nil, err
 	}
 
 	return &types.ResponseCreateProduct{
-		Product: data,
+		Product: &data,
 	}, nil
 }
 
-func NewProductService() contracts.ProductServices {
-	return productService{}
+// Delete implements contracts.ProductServices.
+func (p productServices) Delete(id uint) error {
+	if err := repository.NewProductRepository().Delete(id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetAll implements contracts.ProductServices.
+func (p productServices) GetAll() (*types.ResponsegetAllProduct, error) {
+	getProduct, err := repository.NewProductRepository().GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponsegetAllProduct{
+		Product: getProduct,
+	}, nil
+}
+
+// GetByID implements contracts.ProductServices.
+func (p productServices) GetByID(id uint) (*types.ResponsegetAllProduct, error) {
+
+	where := make(map[string]interface{})
+	where["id"] = id
+
+	getProduct, err := repository.NewProductRepository().FindBy(where)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.ResponsegetAllProduct{
+		Product: getProduct,
+	}, nil
+}
+
+// Update implements contracts.ProductServices.
+func (p productServices) Update(id uint, request types.RequestCreateProduct) (*types.ResponseCreateProduct, error) {
+
+	data := models.Product{
+		CategoryID:         request.CategoryID,
+		ProductName:        request.ProductName,
+		ProductImage:       request.ProductImage,
+		ProductDescription: request.ProductDescription,
+		Price:              request.Price,
+	}
+
+	if err := repository.NewProductRepository().Update(id, data); err != nil {
+		return nil, err
+	}
+
+	return &types.ResponseCreateProduct{
+		Product: &data,
+	}, nil
+}
+
+func NewProductServices() contracts.ProductServices {
+	return productServices{}
 }

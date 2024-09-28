@@ -46,13 +46,13 @@ func InitRouters() http.Handler {
 		}
 		product := v1.Group("/product")
 		{
-			product.POST("/save", productController.Create)
+			product.GET("/category/:id", categoryController.GetByCategory)
+			product.POST("/save", productController.Insert)
 			product.GET("/", productController.GetAll)
-			product.GET("/:id", productController.GetDetail)
+			product.GET("/:id", productController.GetByID)
 			product.PUT("/:id", productController.Update)
 			product.DELETE("/:id", productController.Delete)
 			product.GET("/search", productController.Pagination)
-			product.GET("/category/:id", categoryController.GetByCategory)
 		}
 		customer := v1.Group("/auth")
 		{
