@@ -8,15 +8,15 @@ cache_purged = 60
 
 [database]
 db_driver = "mysql"
-db_host = "localhost"
+db_host = "db"
 db_port = "3306"
 db_name = "toko_online"
 db_username = "user"
 db_password = "password"
 
 [pool]
-conn_idle = 10
-conn_max = 20
+conn_idle = 100
+conn_max = 100
 conn_lifetime = 60
 
 [jwt]
@@ -24,10 +24,10 @@ day_expired = 60
 signature_key = "SuperShy!"
 
 [message_broker]
-rabbimq_url="amqp://guest:guest@localhost:5672/"
+rabbimq_url="amqp://guest:guest@rabbitmq:5672/"
 
 [cache]
-cache_addr = "localhost:6379"
+cache_addr = "cache:6379"
 cache_password = ""
 
 [payment]
@@ -42,5 +42,5 @@ password="YLkGFhT4XKhPExD7"
 
 [logstash]
 network = "tcp"
-addr = "127.0.0.1:5000"
+addr = "logstash:5000"
 app_name = "toko_online"

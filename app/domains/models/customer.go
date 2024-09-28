@@ -3,9 +3,9 @@ package models
 import "time"
 
 type Customer struct {
-	ID        uint   `gorm:"primaryKey;autoIncrement"`
+	ID        uint   `gorm:"primaryKey;autoIncrement" json:"-"`
 	Username  string `gorm:"unique"`
-	Password  string
+	Password  string `json:"-"`
 	FullName  string
 	Email     string `gorm:"unique"`
 	CreatedAt time.Time

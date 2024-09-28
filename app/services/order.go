@@ -131,7 +131,7 @@ func (o orderServices) GetTransaction(id uint) (*types.ResponseGetTransaction, e
 		}
 
 		toJson := utils.StructToJson(&getTrx)
-		cache.CACHE.Set(context.Background(), fmt.Sprintf("category:%v", _id), toJson, time.Duration(time.Minute*30))
+		cache.CACHE.Set(context.Background(), fmt.Sprintf("order:%v", _id), toJson, time.Duration(time.Minute*30))
 		return &types.ResponseGetTransaction{
 			Transaction: getTrx,
 		}, nil

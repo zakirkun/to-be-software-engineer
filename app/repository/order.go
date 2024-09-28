@@ -43,7 +43,7 @@ func (o orderRepository) GetByID(id uint) (*models.Transaction, error) {
 	}
 
 	var data models.Transaction
-	if err := db.Debug().Model(&models.Transaction{}).Where("id = ?", id).Find(&data).Error; err != nil {
+	if err := db.Debug().Preload("Product").Preload("Customer").Model(&models.Transaction{}).Where("id = ?", id).Find(&data).Error; err != nil {
 		return nil, err
 	}
 
