@@ -7,6 +7,7 @@ import (
 
 	"imzakir.dev/e-commerce/app/services"
 	"imzakir.dev/e-commerce/pkg/config"
+	"imzakir.dev/e-commerce/pkg/logstash"
 	"imzakir.dev/e-commerce/pkg/rabbitmq"
 )
 
@@ -20,7 +21,8 @@ func init() {
 func main() {
 	setConfig()
 
-	bundle := NewBudle(SetRabbitMq())
+	bundle := NewBudle(SetLogstash(), SetRabbitMq())
+	bundle.Logstash()
 	bundle.EventEmail()
 }
 
@@ -38,8 +40,28 @@ func SetRabbitMq() rabbitmq.RabbitMQ {
 	}
 }
 
+func SetLogstash() logstash.LogstashModel {
+	return logstash.LogstashModel{
+		Network: config.GetString("logstash.network"),
+		Addr:    config.GetString("logstash.addr"),
+	}
+}
+
 type iBundleListener struct {
+	logstash logstash.LogstashModel
 	rabbitmq rabbitmq.RabbitMQ
+}
+
+// Logstash implements IBudleInterface.
+func (i iBundleListener) Logstash() {
+
+	_, err := i.logstash.Open()
+	if err != nil {
+		log.Fatalf("Failed Connect Logstash: %v", err)
+		os.Exit(1)
+	}
+
+	logstash.LOGSTASH = &i.logstash
 }
 
 // EventEmail implements IBudleInterface.
@@ -49,14 +71,20 @@ func (i iBundleListener) EventEmail() {
 		log.Fatalf("Failed Connect RabbitMq: %v", err)
 		os.Exit(1)
 	}
+
 	// Enable Listener
-	i.rabbitmq.Listener("email_services", services.NewOrderServices().HandleSentEmail)
+	i.rabbitmq.Listener("email_services", services.NewOrderServices().HandleSentEmail, services.NewOrderServices().HandleLogging)
 }
 
 type IBudleInterface interface {
+	Logstash()
 	EventEmail()
 }
 
-func NewBudle(rabbitmq rabbitmq.RabbitMQ) IBudleInterface {
-	return iBundleListener{rabbitmq: rabbitmq}
+func NewBudle(logstash logstash.LogstashModel,
+	rabbitmq rabbitmq.RabbitMQ) IBudleInterface {
+	return iBundleListener{
+		logstash: logstash,
+		rabbitmq: rabbitmq,
+	}
 }

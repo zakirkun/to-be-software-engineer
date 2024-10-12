@@ -5,7 +5,7 @@ import "time"
 type Customer struct {
 	Id        int        `gorm:"primary_key;auto_increment" json:"-"`
 	Username  string     `gorm:"username;unique" json:"username"`
-	Password  string     `gorm:"password" json:"password"`
+	Password  string     `json:"-"`
 	Email     string     `gorm:"email;unique" json:"email"`
 	FullName  string     `gorm:"full_name" json:"full_name"`
 	CreatedAt time.Time  `json:"created_at"`

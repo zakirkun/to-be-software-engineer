@@ -98,7 +98,7 @@ services:
     volumes:
       - ./deploy/elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     ports:
-      - "5000:5000"
+      - "6969:5000"
     networks:
       - infrastructure
     depends_on:

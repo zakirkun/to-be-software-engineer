@@ -15,8 +15,8 @@ db_username = "user"
 db_password = "password"
 
 [pool]
-conn_idle = 10
-conn_max = 20
+conn_idle = 100
+conn_max = 100
 conn_lifetime = 60
 
 [jwt]
@@ -27,7 +27,7 @@ signature_key = "SuperShy!"
 rabbimq_url="amqp://guest:guest@localhost:5672/"
 
 [cache]
-cache_addr = "localhost:6379"
+cache_addr = "cache:6379"
 cache_password = ""
 
 [payment]
@@ -39,3 +39,8 @@ host="smtp.mailersend.net"
 port=587
 username="MS_BiRD7P@trial-351ndgw215rgzqx8.mlsender.net"
 password="YLkGFhT4XKhPExD7"
+
+[logstash]
+network = "tcp"
+addr = "127.0.0.1:6969"
+app_name = "toko_online"

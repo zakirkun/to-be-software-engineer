@@ -10,6 +10,7 @@ import (
 	"imzakir.dev/e-commerce/pkg/cache"
 	"imzakir.dev/e-commerce/pkg/config"
 	"imzakir.dev/e-commerce/pkg/database"
+	"imzakir.dev/e-commerce/pkg/logstash"
 	"imzakir.dev/e-commerce/pkg/rabbitmq"
 	"imzakir.dev/e-commerce/pkg/server"
 	"imzakir.dev/e-commerce/router"
@@ -25,7 +26,8 @@ func init() {
 func main() {
 	setConfig()
 
-	infra := bootstrap.NewInfrastructure(SetDatabase(), SetCache(), SetRabbitMq(), SetWebServer())
+	infra := bootstrap.NewInfrastructure(SetLogstash(), SetDatabase(), SetCache(), SetRabbitMq(), SetWebServer())
+	infra.Logstash()
 	infra.Database()
 	infra.Cache()
 	infra.MessagesBroker()
@@ -75,5 +77,12 @@ func SetWebServer() server.ServerContext {
 func SetRabbitMq() rabbitmq.RabbitMQ {
 	return rabbitmq.RabbitMQ{
 		Address: config.GetString("message_broker.rabbimq_url"),
+	}
+}
+
+func SetLogstash() logstash.LogstashModel {
+	return logstash.LogstashModel{
+		Network: config.GetString("logstash.network"),
+		Addr:    config.GetString("logstash.addr"),
 	}
 }

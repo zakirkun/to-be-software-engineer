@@ -14,6 +14,8 @@ func InitRouters() http.Handler {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
+	// Enable Logging Middleware
+	e.Use(appMiddleware.Logging)
 
 	// Auth Handler
 
