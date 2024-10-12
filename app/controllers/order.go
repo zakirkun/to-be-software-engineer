@@ -15,6 +15,11 @@ import (
 
 type orderController struct{}
 
+// HandleCallback implements contracts.OrderController.
+func (o orderController) HandleCallback(ctx echo.Context) error {
+	panic("unimplemented")
+}
+
 // CreateTransaction implements contracts.OrderController.
 func (o orderController) CreateTransaction(ctx echo.Context) error {
 	var request types.RequestCreateTransaction

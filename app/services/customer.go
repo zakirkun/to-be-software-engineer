@@ -49,6 +49,24 @@ func (c customerServices) Login(request types.RequestLoginCustomer) (*types.Resp
 		return nil, err
 	}
 
+	ip := utils.GetLocalIP().String()
+
+	var sendNewLoginLetter = func() {
+		sentEmailParam := make(map[string]interface{})
+		sentEmailParam["To"] = getCust.Email
+		sentEmailParam["Subject"] = "New Device Login"
+		sentEmailParam["Body"] = fmt.Sprintf("Dear %v, new ip (%v) authorized success:", getCust.Username, ip)
+		log.Info(sentEmailParam)
+
+		if err := rabbitmq.RMQ.Publish("email_services", sentEmailParam); err != nil {
+			log.Printf("EMAIL_SERVICES_MESSAGES_BROKER_ERROR: %v", err)
+		}
+
+		log.Info("Welcome letter success send")
+	}
+
+	go sendNewLoginLetter()
+
 	return &types.ResponseLoginCustomer{
 		Token:    token,
 		Username: getCust.Username,

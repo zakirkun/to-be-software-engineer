@@ -21,6 +21,7 @@ var configFile *string
 func init() {
 	configFile = flag.String("c", "config.toml", "configuration file")
 	flag.Parse()
+
 }
 
 func main() {

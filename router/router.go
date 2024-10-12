@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"imzakir.dev/e-commerce/app/controllers"
 	appMiddleware "imzakir.dev/e-commerce/app/middleware"
 )
@@ -26,6 +27,9 @@ func InitRouters() http.Handler {
 		return ctx.JSON(http.StatusOK, map[string]string{"messages": "Privated Area!", "request-id": ctx.Request().Header.Get(echo.HeaderXRequestID)})
 
 	}, appMiddleware.AuthMiddleware)
+
+	// prompthandler
+	e.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
 
 	// controller
 	categoryController := controllers.NewCategoryController()

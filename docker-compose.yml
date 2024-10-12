@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile.app
     ports:
       - "9000:9000"
-    restart: unless-stopped
+    restart: always
     links:
       - db
       - cache
@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.payment
-    restart: unless-stopped
+    restart: always
     links:
       - db
       - rabbitmq
@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.email
-    restart: unless-stopped
+    restart: always
     links:
       - rabbitmq
     networks:
@@ -115,10 +115,58 @@ services:
       - infrastructure
     depends_on:
       - elasticsearch
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks:
+      - infrastructure
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - infrastructure
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
+    networks:
+      - infrastructure
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./deploy/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - infrastructure
       
 volumes:
   mysql_data:
   cache:
+  grafana-storage:
 
 networks:
   infrastructure:

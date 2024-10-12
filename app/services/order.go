@@ -22,6 +22,42 @@ import (
 
 type orderServices struct{}
 
+// HandleCallback implements contracts.OrderServices.
+func (o orderServices) HandleCallback(notificationPayload map[string]interface{}) error {
+
+	orderId, exists := notificationPayload["order_id"].(string)
+	if !exists {
+		// do something when key `order_id` not found
+		return errors.New("order id not found")
+	}
+
+	transactionStatusResp, e := c.CheckTransaction(orderId)
+	if e != nil {
+		return e.GetRawError()
+	} else {
+		if transactionStatusResp != nil {
+			if transactionStatusResp.TransactionStatus == "capture" {
+				if transactionStatusResp.FraudStatus == "challenge" {
+
+				} else if transactionStatusResp.FraudStatus == "accept" {
+
+				}
+			} else if transactionStatusResp.TransactionStatus == "settlement" {
+
+			} else if transactionStatusResp.TransactionStatus == "deny" {
+
+			} else if transactionStatusResp.TransactionStatus == "cancel" || transactionStatusResp.TransactionStatus == "expire" {
+
+			} else if transactionStatusResp.TransactionStatus == "pending" {
+
+			}
+		}
+	}
+
+	return nil
+
+}
+
 // HandleLogging implements contracts.OrderServices.
 func (o orderServices) HandleLogging(data []byte) error {
 

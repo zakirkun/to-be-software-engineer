@@ -12,7 +12,6 @@ import (
 	"imzakir.dev/e-commerce/app/domains/contracts"
 	"imzakir.dev/e-commerce/app/domains/types"
 	"imzakir.dev/e-commerce/app/repository"
-	"imzakir.dev/e-commerce/pkg/config"
 	"imzakir.dev/e-commerce/pkg/logstash"
 	"imzakir.dev/e-commerce/pkg/rabbitmq"
 )
@@ -37,19 +36,6 @@ func (p paymentServices) HandleLogging(data []byte) error {
 	}
 
 	return nil
-}
-
-var s snap.Client
-
-func initPayment() {
-	mode := config.GetString("payment.mode")
-	if mode == "sandbox" {
-		s.Env = midtrans.Sandbox
-	} else {
-		s.Env = midtrans.Production
-	}
-
-	s.New(config.GetString("payment.sb_server_key"), s.Env)
 }
 
 // HandlePaymentCallback implements contracts.PaymentServices.
@@ -139,6 +125,5 @@ func (p paymentServices) HandlePayment(data []byte) error {
 }
 
 func NewPaymentServices() contracts.PaymentServices {
-	initPayment()
 	return paymentServices{}
 }

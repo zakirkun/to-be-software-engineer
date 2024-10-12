@@ -16,9 +16,11 @@ type OrderServices interface {
 	GetTransaction(id uint) (*types.ResponseGetTransaction, error)
 	HandleSentEmail(data []byte) error
 	HandleLogging(data []byte) error
+	HandleCallback(notificationPayload map[string]interface{}) error
 }
 
 type OrderController interface {
 	CreateTransaction(ctx echo.Context) error
 	GetTransaction(ctx echo.Context) error
+	HandleCallback(ctx echo.Context) error
 }
