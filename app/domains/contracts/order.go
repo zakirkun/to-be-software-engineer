@@ -16,7 +16,7 @@ type OrderServices interface {
 	GetTransaction(id uint) (*types.ResponseGetTransaction, error)
 	HandleSentEmail(data []byte) error
 	HandleLogging(data []byte) error
-	HandleCallback(notificationPayload map[string]interface{}) error
+	// HandleCallback(notificationPayload map[string]interface{}) error
 }
 
 type OrderController interface {

@@ -2,6 +2,21 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
+rule_files:
+  - 'alerting_rules.yml'
+
+# Grafana URL: http://cortex:9009/api/prom
+remote_write:
+  - url: http://cortex:9009/api/prom/push
+
+alerting:
+  alertmanagers:
+    - scheme: http
+      static_configs:
+        - targets:
+            - "alertmanager:9093"
+
+
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
@@ -15,10 +30,8 @@ scrape_configs:
     static_configs:
       - targets: ['backend_app:9000']
 
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets: ['alertmanager:9093']
-
-rule_files:
-  - './alert/alerting_rules.yml'
+  - job_name: 'pushgateway'
+    scrape_interval: 10s
+    honor_labels: true
+    static_configs:
+      - targets: ['pushgateway:9091']

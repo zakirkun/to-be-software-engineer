@@ -4,15 +4,16 @@ import (
 	"github.com/midtrans/midtrans-go"
 	"github.com/midtrans/midtrans-go/coreapi"
 	"github.com/midtrans/midtrans-go/snap"
-	"imzakir.dev/e-commerce/pkg/config"
 )
 
 var s snap.Client
 var c coreapi.Client
 
 func init() {
-	mode := config.GetString("payment.sb_server_mode")
-	serverKey := config.GetString("payment.sb_server_key")
+	// mode := config.GetString("payment.sb_server_mode")
+	mode := "sandbox"
+	// serverKey := config.GetString("payment.sb_server_key")
+	serverKey := "SB-Mid-server-FxnHTffLCcsFPQjMcJTcJrTb"
 	midtrans.ServerKey = serverKey
 
 	if mode == "sandbox" {

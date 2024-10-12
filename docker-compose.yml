@@ -138,6 +138,8 @@ services:
     restart: unless-stopped
     networks:
       - infrastructure
+    depends_on:
+      - prometheus
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -153,6 +155,7 @@ services:
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
+      
   alertmanager:
     image: prom/alertmanager:latest
     container_name: alertmanager
@@ -160,6 +163,30 @@ services:
       - "9093:9093"
     volumes:
       - ./deploy/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - infrastructure
+  
+  pushgateway:
+    image: prom/pushgateway
+    container_name: pushgateway
+    ports:
+      - "9091:9091"
+    depends_on:
+      - prometheus
+    networks:
+      - infrastructure
+  #https://logz.io/blog/devops/prometheus-architecture-at-scale/
+  cortex:
+    image: cortexproject/cortex:v0.1.0
+    #image: ubuntu/cortex:latest
+    container_name: cortex
+    ports:
+      - "9009:9009"
+    command: "-config.file=/etc/single-process-config.yaml"
+    depends_on:
+      - prometheus
+    volumes:
+      - "./deploy/cortex/single-process-config.yaml:/etc/single-process-config.yaml"
     networks:
       - infrastructure
       
