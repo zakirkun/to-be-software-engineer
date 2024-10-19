@@ -1,0 +1,19 @@
+version: '3'
+
+networks:
+  infrastructure:
+
+services:
+   proxy-gateway:
+    image: nginx:latest
+    container_name: reverse-proxy
+    volumes:
+      - ./deploy/nginx/default.conf:/etc/nginx/nginx.conf
+      - ./deploy/nginx/site/api.conf:/etc/nginx/sites-enabled/api.conf
+      - ./deploy/nginx/site/grafana.conf:/etc/nginx/sites-enabled/grafana.conf
+      - ./deploy/nginx/site/kibana.conf:/etc/nginx/sites-enabled/kibana.conf
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - infrastructure

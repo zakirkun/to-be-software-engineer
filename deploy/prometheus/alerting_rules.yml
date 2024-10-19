@@ -63,6 +63,6 @@ groups:
           severity: critical
         annotations:
           summary: "Backend services is down"
-          description: "The Backend App service has been unreachable for more than 1 minute."
+          description: "The Backend server backend has been unreachable for more than 1 minute."
           
       
